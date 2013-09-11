@@ -1,0 +1,33 @@
+{
+    "name": "hirokws/strivejobs",
+    "description": "Register/cancel/hold jobs from web/commands without Laravel queue facility.",
+    "license": "MIT",
+    "keywords": [
+        "laravel", "job"
+    ],
+    "authors": [
+        {
+            "name": "Hirohisa Kawase",
+            "email": "hiro.soft@gmail.com",
+            "role": "developer"
+        }
+    ],
+    "require": {
+        "php": ">=5.3.0",
+        "illuminate/support": "4.0.x"
+    },
+    "require-dev": {
+        "phpunit/phpunit": "3.7.*@dev",
+        "mockery/mockery": "0.8.*"
+    },
+    "autoload": {
+        "classmap": [
+            "src/migrations",
+            "src/seeds"
+        ],
+        "psr-0": {
+            "Strivejobs": "src/Hirokws"
+        }
+    },
+    "minimum-stability": "dev"
+}
