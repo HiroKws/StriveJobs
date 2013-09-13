@@ -1,4 +1,8 @@
-<?php namespace Illuminate\Support\Facades;
+<?php
+
+namespace StriveJobs;
+
+use Illuminate\Support\Facades\Facade;
 
 class StriveJobsFacade extends Facade {
 
@@ -7,6 +11,6 @@ class StriveJobsFacade extends Facade {
 	 *
 	 * @return string
 	 */
-	protected static function getFacadeAccessor() { return 'strivejobs'; }
+	protected static function getFacadeAccessor() { return 'StriveJobs\\StriveJobs'; }
 
 }

@@ -7,9 +7,12 @@ use StriveJobs\StriveJobs;
 use StriveJobs\Commands\StartJob;
 use StriveJobs\Commands\ResumeJobs;
 use StriveJobs\Commands\ListJobs;
+use StriveJobs\Commands\RegisterJob;
+use StriveJobs\Commands\ShowJobs;
+use StriveJobs\Repositories\StriveJobsEloquentRepository;
 
-class StriveJobsServiceProvider extends ServiceProvider{
-
+class StriveJobsServiceProvider extends ServiceProvider
+{
     /**
      * Indicates if loading of the provider is deferred.
      *
@@ -24,8 +27,17 @@ class StriveJobsServiceProvider extends ServiceProvider{
      */
     public function register()
     {
-        $this->app['strivejobs'] = $this->app->share( function() {
+        $this->app['StriveJobs\\StriveJobs'] = $this->app->share( function()
+            {
                 return new StriveJobs;
+            }
+        );
+
+        $this->app['StriveJobs\\Repositories\\JobsRepositoryInterface'] =
+            $this->app->share( function ($app)
+            {
+                return new StriveJobsEloquentRepository(
+                    $app['StriveJobs\\EloquentModels\\StriveJob'] );
             }
         );
     }
@@ -40,8 +52,8 @@ class StriveJobsServiceProvider extends ServiceProvider{
         // Defined prefix for config, lang, views.
         $this->package( 'hirokws/strivejobs', 'StriveJobs' );
 
-        // Register jobs
-        $this->registerJobs();
+        // Register commands
+        $this->registerCommands();
     }
 
     /**
@@ -51,29 +63,54 @@ class StriveJobsServiceProvider extends ServiceProvider{
      */
     public function provides()
     {
-        return array( );
+        return array(
+            'StriveJobs\\StriveJobs',
+            'strivejobs.startcommand',
+            'strivejobs.resumecommand',
+            'strivejobs.registercommand',
+            'strivejobs.listcommand',
+            'strivejobs.showcommand' );
     }
 
-    private function registerJobs()
+    private function registerCommands()
     {
         // Start command
-        $this->app['strivejobs.startcommand'] = $this->app->share( function($app){
+        $this->app['strivejobs.startcommand'] = $this->app->share( function($app)
+            {
                 return new StartJob( );
-        } );
+            } );
 
         // Resume command
-        $this->app['strivejobs.resumecommand'] = $this->app->share( function($app){
+        $this->app['strivejobs.resumecommand'] = $this->app->share( function($app)
+            {
                 return new ResumeJobs( );
-        } );
+            } );
+
+        // Register command
+        $this->app['strivejobs.registercommand'] = $this->app->share( function($app)
+            {
+                return new RegisterJob( );
+            } );
 
         // List job names command
-        $this->app['strivejobs.listcommand'] = $this->app->share( function($app){
+        $this->app['strivejobs.listcommand'] = $this->app->share( function($app)
+            {
                 return new ListJobs( );
-        } );
+            } );
+
+       // Show jobs commnand
+        $this->app['strivejobs.showcommand'] = $this->app->share( function($app)
+            {
+                return new ShowJobs( );
+            } );
 
         // Register all commands
         $this->commands(
-            'strivejobs.startcommand', 'strivejobs.resumecommand', 'strivejobs.listcommand'
+            'strivejobs.startcommand',
+            'strivejobs.resumecommand',
+            'strivejobs.listcommand',
+            'strivejobs.registercommand',
+            'strivejobs.showcommand'
         );
     }
 
