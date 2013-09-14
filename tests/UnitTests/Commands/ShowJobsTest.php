@@ -1,174 +1,144 @@
 <?php
 
 use Mockery as m;
-use StriveJobs\Commands\RegisterJob;
+use StriveJobs\Commands\ShowJobs;
 use Symfony\Component\Console\Tester\CommandTester;
 
-class RegisterJobTest extends TestCase
+class ShowJobsTest extends TestCase
 {
 
-    public function testFireWithNoArgument()
+    public function testFire()
     {
-        $mock = m::mock( 'StriveJobs\\StriveJobs' );
-        $mock->shouldReceive( 'getJobClasses' )
-            ->never()
-            ->andReturn( array( ) );
+        $striveJobsMock = m::mock( 'StriveJobs\\StriveJobs' );
+        $striveJobsMock->shouldReceive( 'getJobs' )
+            ->once()
+            ->with( '', 0, false )
+            ->andReturn( array( array(
+                    'id' => 1,
+                    'name' => 'Job1',
+                    'status' => 'registered',
+                    'comment' => 'Comm'
+            ) ) );
 
-        App::instance( 'StriveJobs\\StriveJobs', $mock );
+        App::instance( 'StriveJobs\\StriveJobs', $striveJobsMock );
 
-        $this->setExpectedException( 'RuntimeException' );
-
-        $tester = new CommandTester( new RegisterJob );
+        $tester = new CommandTester( new ShowJobs );
         $tester->execute( array( ) );
+
+        $this->assertEquals( "1 Job1(registered) \"Comm\"\n", $tester->getDisplay() );
     }
 
-    public function testFireWithCorrectJobNumber()
+    public function testFireWithMulitpleJobsDisplay()
     {
-        $jobs = array( 'Job1' => '', 'Job2' => '', 'Job3' => '' );
-
-        $mock = m::mock( 'StriveJobs\\StriveJobs' );
-        $mock->shouldReceive( 'getJobClasses' )
+        $striveJobsMock = m::mock( 'StriveJobs\\StriveJobs' );
+        $striveJobsMock->shouldReceive( 'getJobs' )
             ->once()
-            ->andReturn( $jobs );
-        $mock->shouldReceive( 'registerJob' )
-            ->once()
-            ->with( '1', '', array( ) )
-            ->andReturn( 11 );
+            ->with( '', 0, false )
+            ->andReturn( array(
+                array(
+                    'id' => 1,
+                    'name' => 'Job1',
+                    'status' => 'registered',
+                    'comment' => 'Comm1'
+                ),
+                array(
+                    'id' => 2,
+                    'name' => 'Job2',
+                    'status' => 'terminated',
+                    'comment' => 'Comm2'
+                ),
+                array(
+                    'id' => 3,
+                    'name' => 'Job3',
+                    'status' => 'suspended',
+                    'comment' => 'Comm3'
+                )
+            ) );
 
-        App::instance( 'StriveJobs\\StriveJobs', $mock );
+        App::instance( 'StriveJobs\\StriveJobs', $striveJobsMock );
 
-        $tester = new CommandTester( new RegisterJob );
-        $tester->execute( array( 'job' => '1' ) );
+        $tester = new CommandTester( new ShowJobs );
+        $tester->execute( array( ) );
 
-        $this->assertEquals( "Create new job. ID is 11.\n", $tester->getDisplay() );
+        $this->assertEquals( "1 Job1(registered) \"Comm1\"\n2 Job2(terminated) \"Comm2\"\n3 Job3(suspended) \"Comm3\"\n", $tester->getDisplay() );
     }
 
-    public function testFireWithCorrectJobName()
+    public function testFireWithStatus()
     {
-        $jobs = array( 'Job1' => '', 'Job2' => '', 'Job3' => '' );
-
-        $mock = m::mock( 'StriveJobs\\StriveJobs' );
-        $mock->shouldReceive( 'getJobClasses' )
+        $striveJobsMock = m::mock( 'StriveJobs\\StriveJobs' );
+        $striveJobsMock->shouldReceive( 'getJobs' )
             ->once()
-            ->andReturn( $jobs );
-        $mock->shouldReceive( 'registerJob' )
-            ->once()
-            ->with( 'Job2', '', array( ) )
-            ->andReturn( 12 );
+            ->with( 'Condition', 0, false ) // check only argument
+            ->andReturn( array( array(
+                    'id' => 1,
+                    'name' => 'Job1',
+                    'status' => 'registered',
+                    'comment' => 'Comm'
+            ) ) );
 
-        App::instance( 'StriveJobs\\StriveJobs', $mock );
+        App::instance( 'StriveJobs\\StriveJobs', $striveJobsMock );
 
-        $tester = new CommandTester( new RegisterJob );
-        $tester->execute( array( 'job' => 'Job2' ) );
-
-        $this->assertEquals( "Create new job. ID is 12.\n", $tester->getDisplay() );
+        $tester = new CommandTester( new ShowJobs );
+        $tester->execute( array( 'status' => 'Condition' ) );
     }
 
-    public function testFireWithCorrectJobNameAndArguments()
+    public function testFireWithN()
     {
-        $jobs = array( 'Job1' => '', 'Job2' => '', 'Job3' => '' );
-
-        $mock = m::mock( 'StriveJobs\\StriveJobs' );
-        $mock->shouldReceive( 'getJobClasses' )
+        $striveJobsMock = m::mock( 'StriveJobs\\StriveJobs' );
+        $striveJobsMock->shouldReceive( 'getJobs' )
             ->once()
-            ->andReturn( $jobs );
-        $mock->shouldReceive( 'registerJob' )
-            ->once()
-            ->with( 'Job3', '', array(
-                'arg1' => 'Arg1',
-                'arg2' => 'Arg2',
-                'arg3' => 'Arg3',
-                'arg4' => 'Arg4',
-                'arg5' => 'Arg5' ) )
-            ->andReturn( 13 );
+            ->with( '', 100, false ) // check only argument
+            ->andReturn( array( array(
+                    'id' => 1,
+                    'name' => 'Job1',
+                    'status' => 'registered',
+                    'comment' => 'Comm'
+            ) ) );
 
-        App::instance( 'StriveJobs\\StriveJobs', $mock );
+        App::instance( 'StriveJobs\\StriveJobs', $striveJobsMock );
 
-        $tester = new CommandTester( new RegisterJob );
-        $tester->execute( array( 'job' => 'Job3', 'argument1' => 'Arg1', 'argument2' => 'Arg2', 'argument3' => 'Arg3', 'argument4' => 'Arg4', 'argument5' => 'Arg5' ) );
-
-        $this->assertEquals( "Create new job. ID is 13.\n", $tester->getDisplay() );
+        $tester = new CommandTester( new ShowJobs );
+        $tester->execute( array( '-n' => '100' ) );
     }
 
-    public function testFireWithNoExistJobNumber()
+    public function testFireWithTake()
     {
-        $jobs = array( 'Job1' => '', 'Job2' => '', 'Job3' => '' );
-
-        $mock = m::mock( 'StriveJobs\\StriveJobs' );
-        $mock->shouldReceive( 'getJobClasses' )
+        $striveJobsMock = m::mock( 'StriveJobs\\StriveJobs' );
+        $striveJobsMock->shouldReceive( 'getJobs' )
             ->once()
-            ->andReturn( $jobs );
-        $mock->shouldReceive( 'registerJob' )
-            ->never();
+            ->with( '', 200, false ) // check only argument
+            ->andReturn( array( array(
+                    'id' => 1,
+                    'name' => 'Job1',
+                    'status' => 'registered',
+                    'comment' => 'Comm'
+            ) ) );
 
-        App::instance( 'StriveJobs\\StriveJobs', $mock );
+        App::instance( 'StriveJobs\\StriveJobs', $striveJobsMock );
 
-        $tester = new CommandTester( new RegisterJob );
-        $tester->execute( array( 'job' => '4' ) );
-
-        $this->assertEquals( 'Job is an integer or name. '.
-            'Please confirm by ListJobs commnad.'.PHP_EOL, $tester->getDisplay() );
+        $tester = new CommandTester( new ShowJobs );
+        $tester->execute( array( '--take' => '200' ) );
     }
 
-    public function testFireWithLessThanOneJobNumber()
+    public function testFireWithOldest()
     {
-        $jobs = array( 'Job1' => '', 'Job2' => '', 'Job3' => '' );
-
-        $mock = m::mock( 'StriveJobs\\StriveJobs' );
-        $mock->shouldReceive( 'getJobClasses' )
+        $striveJobsMock = m::mock( 'StriveJobs\\StriveJobs' );
+        $striveJobsMock->shouldReceive( 'getJobs' )
             ->once()
-            ->andReturn( $jobs );
-        $mock->shouldReceive( 'registerJob' )
-            ->never();
+            ->with( '', 0, true ) // check only argument
+            ->andReturn( array( array(
+                    'id' => 1,
+                    'name' => 'Job1',
+                    'status' => 'registered',
+                    'comment' => 'Comm'
+            ) ) );
 
-        App::instance( 'StriveJobs\\StriveJobs', $mock );
+        App::instance( 'StriveJobs\\StriveJobs', $striveJobsMock );
 
-        $tester = new CommandTester( new RegisterJob );
-        $tester->execute( array( 'job' => '0' ) );
-
-        $this->assertEquals( 'Job is an integer or name. '.
-            'Please confirm by ListJobs commnad.'.PHP_EOL, $tester->getDisplay() );
-    }
-
-    public function testFireWithNoExistJobName()
-    {
-        $jobs = array( 'Job1' => '', 'Job2' => '', 'Job3' => '' );
-
-        $mock = m::mock( 'StriveJobs\\StriveJobs' );
-        $mock->shouldReceive( 'getJobClasses' )
-            ->once()
-            ->andReturn( $jobs );
-        $mock->shouldReceive( 'registerJob' )
-            ->never();
-
-        App::instance( 'StriveJobs\\StriveJobs', $mock );
-
-        $tester = new CommandTester( new RegisterJob );
-        $tester->execute( array( 'job' => 'No Matched String' ) );
-
-        $this->assertEquals( 'Job is an integer or name. '.
-            'Please confirm by ListJobs commnad.'.PHP_EOL, $tester->getDisplay() );
-    }
-
-    public function testFireWithCommnet()
-    {
-        $jobs = array( 'Job1' => '', 'Job2' => '', 'Job3' => '' );
-
-        $mock = m::mock( 'StriveJobs\\StriveJobs' );
-        $mock->shouldReceive( 'getJobClasses' )
-            ->once()
-            ->andReturn( $jobs );
-        $mock->shouldReceive( 'registerJob' )
-            ->once()
-            ->with( '1', 'Comm', array( ) )
-            ->andReturn( 20 );
-
-        App::instance( 'StriveJobs\\StriveJobs', $mock );
-
-        $tester = new CommandTester( new RegisterJob );
-        $tester->execute( array( 'job' => '1', '--comment' => 'Comm' ) );
-
-        $this->assertEquals( "Create new job. ID is 20.\n", $tester->getDisplay() );
+        $tester = new CommandTester( new ShowJobs );
+        // In tester environment, must specify 'true' manually
+        // when use 'VALUE_NONE' type option.
+        $tester->execute( array( '--oldest' => 'true' ) );
     }
 
 }

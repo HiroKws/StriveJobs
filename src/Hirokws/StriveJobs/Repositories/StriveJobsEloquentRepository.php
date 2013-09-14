@@ -7,6 +7,7 @@ use StriveJobs\Exceptions\IoException;
 
 class StriveJobsEloquentRepository implements JobsRepositoryInterface
 {
+    protected $striveJob;
 
     public function __construct( StriveJob $striveJob )
     {
@@ -34,12 +35,35 @@ class StriveJobsEloquentRepository implements JobsRepositoryInterface
             )
         );
 
-        if( is_null($newJob) )
+        if( is_null( $newJob ) )
         {
             throw new IoException( 'StriveJobs : IO error to insert new job.' );
         }
 
         return $newJob->id;
+    }
+
+    public function getJobsByStatus( $status = '', $limit = 0, $oldestOrder = false )
+    {
+        $query = $this->striveJob;
+
+        if( $status != '' )
+        {
+            $query = $query->where( 'status', $status );
+        }
+
+        if( $limit != 0 )
+        {
+            $query = $query->take( $limit );
+        }
+
+        if( !$oldestOrder )
+        {
+            $query = $query->orderBy( 'id', 'desc' );
+        }
+
+        // pending : how catch exception from Eloquent.
+        return $query->get()->toArray();
     }
 
 }

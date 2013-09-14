@@ -184,4 +184,74 @@ class StriveJobsTest extends TestCase
                 ->registerJob( '1', 'Comment', array( 'time' => '2' ) ) );
     }
 
+    public function testGetJobs()
+    {
+        $data = array( array( 'test' => 'data' ) );
+
+        $repoMock = m::mock( 'StriveJobs\\Repositories\\JobsRepositoryInterface' );
+        $repoMock->shouldReceive( 'getJobsByStatus' )
+            ->with( '', 0, false )
+            ->once()
+            ->andReturn( $data );
+
+        App::instance( 'StriveJobs\\Repositories\\JobsRepositoryInterface', $repoMock );
+
+        $striveJobs = new StriveJobs;
+
+        $this->assertEquals( $data, $striveJobs->getJobs( '', 0, false ) );
+    }
+
+    public function testGetJobsWithoutArgument()
+    {
+        $data = array( array( 'test' => 'data' ) );
+
+        $repoMock = m::mock( 'StriveJobs\\Repositories\\JobsRepositoryInterface' );
+        $repoMock->shouldReceive( 'getJobsByStatus' )
+            ->with( '', 0, false )
+            ->once()
+            ->andReturn( $data );
+
+        App::instance( 'StriveJobs\\Repositories\\JobsRepositoryInterface', $repoMock );
+
+        $striveJobs = new StriveJobs;
+
+        $this->assertEquals( $data, $striveJobs->getJobs() );
+    }
+
+    public function testGetJobsWithNotDefaultArguments()
+    {
+        $data = array( array( 'test' => 'data' ) );
+
+        $repoMock = m::mock( 'StriveJobs\\Repositories\\JobsRepositoryInterface' );
+        $repoMock->shouldReceive( 'getJobsByStatus' )
+            ->with( 'STAT999', 11, true )
+            ->once()
+            ->andReturn( $data );
+
+        App::instance( 'StriveJobs\\Repositories\\JobsRepositoryInterface', $repoMock );
+
+        $striveJobs = new StriveJobs;
+
+        $this->assertEquals( $data, $striveJobs->getJobs( 'STAT999', 11, true ) );
+    }
+
+    public function testGetJobsWhenIoErrorHappen()
+    {
+        $data = array( array( 'test' => 'data' ) );
+
+        $repoMock = m::mock( 'StriveJobs\\Repositories\\JobsRepositoryInterface' );
+        $repoMock->shouldReceive( 'getJobsByStatus' )
+            ->with( '', 0, false )
+            ->once()
+            ->andThrow( 'StriveJobs\\Exceptions\\IoException' );
+
+        App::instance( 'StriveJobs\\Repositories\\JobsRepositoryInterface', $repoMock );
+
+        $mock1 = m::mock( 'stdClass, StriveJobs\\StriveJobsInterface' );
+
+        $striveJobs = new StriveJobs;
+
+        $this->assertFalse( $striveJobs->getJobs() );
+    }
+
 }

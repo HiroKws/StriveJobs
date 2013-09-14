@@ -40,10 +40,25 @@ class ShowJobs extends Command
     public function fire()
     {
         // Handling arguments and options
+        $args = $this->argument();
+        $opts = $this->option();
 
-        // Call API
+        $status = is_null( $args['status'] ) ? '' : $args['status'];
+        $limit = $opts['take'];
+        $oldestOrder = $opts['oldest'];
+
+        // Don't use constructor to get a instance.
+        // Because everytime make extra instance.
+        $striveJobs = \App::make( 'StriveJobs\\StriveJobs' );
+
+        // call API
+        $jobs = $striveJobs->getJobs( $status, $limit, $oldestOrder );
 
         // Display job records
+        foreach( $jobs as $job )
+        {
+            $this->info( sprintf( "%d %s(%s) \"%s\"", $job['id'], $job['name'], $job['status'], $job["comment"] ) );
+        }
     }
 
     /**
@@ -66,8 +81,8 @@ class ShowJobs extends Command
     protected function getOptions()
     {
         return array(
-            array( 'n', null, InputOption::VALUE_OPTIONAL, 'Only display specified job recodes.', 0 ),
-            array( 'latest', null, InputOption::VALUE_NONE, 'Show latest order.', null ),
+            array( 'take', 'n', InputOption::VALUE_OPTIONAL, 'Only display specified job recode count.', 0 ),
+            array( 'oldest', 'o', InputOption::VALUE_NONE, 'Show oldest order.', null ),
         );
     }
 

@@ -79,7 +79,7 @@ class StriveJobs
 
         if( is_numeric( $job ) )
         {
-            $job = key( array_slice( $this->jobClasses, $job-1, 1, true ) );
+            $job = key( array_slice( $this->jobClasses, $job - 1, 1, true ) );
         }
 
         try
@@ -92,6 +92,20 @@ class StriveJobs
         }
 
         return $jobId;
+    }
+
+    public function getJobs( $status = '', $limit = 0, $latestedOrder = false )
+    {
+        try
+        {
+            $jobs = $this->repo->getJobsByStatus( $status, $limit, $latestedOrder );
+        }
+        catch( IoException $e )
+        {
+            return false;
+        }
+
+        return $jobs;
     }
 
 }

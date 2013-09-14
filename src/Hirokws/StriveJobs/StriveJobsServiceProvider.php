@@ -9,6 +9,7 @@ use StriveJobs\Commands\ResumeJobs;
 use StriveJobs\Commands\ListJobs;
 use StriveJobs\Commands\RegisterJob;
 use StriveJobs\Commands\ShowJobs;
+use StriveJobsCommands\ChangeStatus;
 use StriveJobs\Repositories\StriveJobsEloquentRepository;
 
 class StriveJobsServiceProvider extends ServiceProvider
@@ -104,13 +105,20 @@ class StriveJobsServiceProvider extends ServiceProvider
                 return new ShowJobs( );
             } );
 
+       // Change job status commnand
+        $this->app['strivejobs.changecommand'] = $this->app->share( function($app)
+            {
+                return new ChangeStatus( );
+            } );
+
         // Register all commands
         $this->commands(
             'strivejobs.startcommand',
             'strivejobs.resumecommand',
             'strivejobs.listcommand',
             'strivejobs.registercommand',
-            'strivejobs.showcommand'
+            'strivejobs.showcommand',
+            'strivejobs.changecommand'
         );
     }
 
