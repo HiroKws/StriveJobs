@@ -105,7 +105,8 @@ class ChangeStatus extends Command
             $ids = $args['greaterThanEqual'];
         }
 
-        if( $args['dryRun'] )
+        // Dry run
+        if( $args['dry'] )
         {
             $jobs = $striveJobs->getJobsWithMode( $mode, $ids );
 
@@ -124,7 +125,10 @@ class ChangeStatus extends Command
             return;
         }
 
-        $striveJobs->changeStatus( $args['newStatus'], $mode, $ids );
+        // Call change status API
+        $affected = $striveJobs->changeJobStatus( $mode, $ids, $args['newStatus'] );
+
+        $this->info("Updated $affected job(s)." );
     }
 
     /**
@@ -154,7 +158,7 @@ class ChangeStatus extends Command
             array( 'lessThanEqual', 'l', InputOption::VALUE_OPTIONAL, 'Execute for jobs less than equale with specified ID.', null ),
             array( 'greaterThan', null, InputOption::VALUE_OPTIONAL, 'Execute for jobs greater than specified ID.', null ),
             array( 'greaterThanEqual', 'g', InputOption::VALUE_OPTIONAL, 'Execute for jobs greater than or equale with specified ID.', null ),
-            array( 'dryRun', 'd', InputOption::VALUE_NONE, 'Dry run to check target jobs.', null ),
+            array( 'dry', 'd', InputOption::VALUE_NONE, 'Dry run to check target jobs.', null ),
         );
     }
 

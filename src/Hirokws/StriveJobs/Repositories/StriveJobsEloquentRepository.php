@@ -81,31 +81,43 @@ class StriveJobsEloquentRepository implements JobsRepositoryInterface
 
     public function getJobsWithMode( $mode, $ids )
     {
+        return $this->getWhereFromMode( $this->striveJob, $mode, $ids )
+            ->get()->toArray();
+    }
+
+    public function changeJobStatus( $mode, $ids, $newStatus )
+    {
+        return $this->getWhereFromMode($this->striveJob, $mode, $ids)
+            ->update( array( 'status' => $newStatus ) );
+    }
+
+    private function getWhereFromMode( $query, $mode, $ids )
+    {
         switch( $mode )
         {
             case 'status' :
-                $query = $this->striveJob->whereIn( 'status', $ids );
+                $query = $query->whereIn( 'status', $ids );
                 break;
             case 'equal' :
-                $query = $this->striveJob->whereIn( 'id', $ids );
+                $query = $query->whereIn( 'id', $ids );
                 break;
             case 'notEqual' :
-                $query = $this->striveJob->whereNotIn( 'id', $ids );
+                $query = $query->whereNotIn( 'id', $ids );
                 break;
             case 'lessThan' :
-                $query = $this->striveJob->where( 'id', '<', $ids );
+                $query = $query->where( 'id', '<', $ids );
                 break;
             case 'lessThanEqual' :
-                $query = $this->striveJob->where( 'id', '<=', $ids );
+                $query = $query->where( 'id', '<=', $ids );
                 break;
             case 'greaterThan':
-                $query = $this->striveJob->where( 'id', '>', $ids );
+                $query = $query->where( 'id', '>', $ids );
                 break;
             case 'greaterThanEqual' :
-                $query = $this->striveJob->where( 'id', '>=', $ids );
+                $query = $query->where( 'id', '>=', $ids );
         }
 
-        return $query->get()->toArray();
+        return $query;
     }
 
 }

@@ -110,18 +110,7 @@ class StriveJobs
 
     public function getJobsWithMode( $mode, $ids )
     {
-        if( !in_array( $mode, array(
-                'status',
-                'equal',
-                'notEqual',
-                'lessThan',
-                'lessThanEqual',
-                'greaterThan',
-                'greaterThanEqual'
-            ) ) )
-        {
-            return false;
-        }
+        if( !$this->isMode( $mode ) ) return false;
 
         if( $mode == 'equal' && !$this->isExistJobs( $ids ) ) return false;
 
@@ -135,6 +124,24 @@ class StriveJobs
         }
 
         return $jobs;
+    }
+
+    public function changeJobStatus( $mode, $ids, $newStatus )
+    {
+        if( !$this->isMode( $mode ) ) return false;
+
+        if( $mode == 'equal' && !$this->isExistJobs( $ids ) ) return false;
+
+        try
+        {
+            $affectedCount = $this->repo->changeJobStatus( $mode, $ids, $newStatus );
+        }
+        catch( IoException $e )
+        {
+            return false;
+        }
+
+        return $affectedCount;
     }
 
     public function isExistJobs( $ids )
@@ -151,6 +158,19 @@ class StriveJobs
         {
             return false;
         }
+    }
+
+    private function isMode( $mode )
+    {
+        return in_array( $mode, array(
+            'status',
+            'equal',
+            'notEqual',
+            'lessThan',
+            'lessThanEqual',
+            'greaterThan',
+            'greaterThanEqual'
+            ) );
     }
 
 }
