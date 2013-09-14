@@ -1,4 +1,4 @@
-<?php namespace StriveJobsCommands;
+<?php namespace StriveJobs\Commands;
 
 use Illuminate\Console\Command;
 use Symfony\Component\Console\Input\InputOption;

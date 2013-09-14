@@ -9,7 +9,7 @@ use StriveJobs\Commands\ResumeJobs;
 use StriveJobs\Commands\ListJobs;
 use StriveJobs\Commands\RegisterJob;
 use StriveJobs\Commands\ShowJobs;
-use StriveJobsCommands\ChangeStatus;
+use StriveJobs\Commands\ChangeStatus;
 use StriveJobs\Repositories\StriveJobsEloquentRepository;
 
 class StriveJobsServiceProvider extends ServiceProvider

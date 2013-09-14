@@ -81,7 +81,7 @@ class ShowJobs extends Command
     protected function getOptions()
     {
         return array(
-            array( 'take', 'n', InputOption::VALUE_OPTIONAL, 'Only display specified job recode count.', 0 ),
+            array( 'take', 't', InputOption::VALUE_OPTIONAL, 'Only display specified job recode count.', 0 ),
             array( 'oldest', 'o', InputOption::VALUE_NONE, 'Show oldest order.', null ),
         );
     }

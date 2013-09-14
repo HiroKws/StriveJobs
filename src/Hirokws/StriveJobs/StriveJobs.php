@@ -108,4 +108,49 @@ class StriveJobs
         return $jobs;
     }
 
+    public function getJobsWithMode( $mode, $ids )
+    {
+        if( !in_array( $mode, array(
+                'status',
+                'equal',
+                'notEqual',
+                'lessThan',
+                'lessThanEqual',
+                'greaterThan',
+                'greaterThanEqual'
+            ) ) )
+        {
+            return false;
+        }
+
+        if( $mode == 'equal' && !$this->isExistJobs( $ids ) ) return false;
+
+        try
+        {
+            $jobs = $this->repo->getJobsWithMode( $mode, $ids );
+        }
+        catch( IoException $e )
+        {
+            return false;
+        }
+
+        return $jobs;
+    }
+
+    public function isExistJobs( $ids )
+    {
+        $ids = ( array ) $ids;
+
+        if( empty( $ids ) ) return false;
+
+        try
+        {
+            return $this->repo->isExistJobs( $ids );
+        }
+        catch( IoException $e )
+        {
+            return false;
+        }
+    }
+
 }

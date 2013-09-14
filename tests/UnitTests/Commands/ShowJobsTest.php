@@ -82,7 +82,7 @@ class ShowJobsTest extends TestCase
         $tester->execute( array( 'status' => 'Condition' ) );
     }
 
-    public function testFireWithN()
+    public function testFireWithT()
     {
         $striveJobsMock = m::mock( 'StriveJobs\\StriveJobs' );
         $striveJobsMock->shouldReceive( 'getJobs' )
@@ -98,7 +98,7 @@ class ShowJobsTest extends TestCase
         App::instance( 'StriveJobs\\StriveJobs', $striveJobsMock );
 
         $tester = new CommandTester( new ShowJobs );
-        $tester->execute( array( '-n' => '100' ) );
+        $tester->execute( array( '-t' => '100' ) );
     }
 
     public function testFireWithTake()
