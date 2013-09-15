@@ -4,23 +4,22 @@ namespace StriveJobs\Commands;
 
 use Illuminate\Console\Command;
 use Symfony\Component\Console\Input\InputOption;
-use Symfony\Component\Console\Input\InputArgument;
 
-class ShowJobs extends Command
+class ResetJobs extends Command
 {
     /**
      * The console command name.
      *
      * @var string
      */
-    protected $name = 'StriveJobs:show';
+    protected $name = 'StriveJobs:reset';
 
     /**
      * The console command description.
      *
      * @var string
      */
-    protected $description = 'Show jobs infomation.';
+    protected $description = 'Reset all jobs.';
 
     /**
      * Create a new command instance.
@@ -39,26 +38,26 @@ class ShowJobs extends Command
      */
     public function fire()
     {
-        // Handling arguments and options
-        $args = $this->argument();
-        $opts = $this->option();
+        $password = trim( $this->secret( 'Password ? : ' ) );
 
-        $status = is_null( $args['status'] ) ? '' : $args['status'];
-        $limit = $opts['take'];
-        $oldestOrder = $opts['oldest'];
+        if( $this->option( 'hash' ) )
+        {
+            $this->info( \Hash::make( $password ) );
+            return;
+        }
 
-        // Don't use constructor to get a instance.
-        // Because everytime make extra instance.
+        if( !\Hash::check( $password, \Config::get( 'StriveJobs::HashedResetPassword' ) ) )
+        {
+            $this->error( 'Entered password faild to match.' );
+            return;
+        }
+
+        // Get API instance
         $striveJobs = \App::make( 'StriveJobs\\StriveJobs' );
 
-        // call API
-        $jobs = $striveJobs->getJobs( $status, $limit, $oldestOrder );
+        $striveJobs->truncateAllJob();
 
-        // Display job records
-        foreach( $jobs as $job )
-        {
-            $this->line( sprintf( "%d %s(%s) \"%s\"", $job['id'], $job['name'], $job['status'], $job["comment"] ) );
-        }
+        $this->info( 'Reset all job.' );
     }
 
     /**
@@ -69,7 +68,6 @@ class ShowJobs extends Command
     protected function getArguments()
     {
         return array(
-            array( 'status', InputArgument::OPTIONAL, 'Show only jobs specified status.' ),
         );
     }
 
@@ -82,17 +80,10 @@ class ShowJobs extends Command
     {
         return array(
             array(
-                'take',
-                't',
-                InputOption::VALUE_OPTIONAL,
-                'Only display specified job recode count.',
-                0
-            ),
-            array(
-                'oldest',
-                'o',
+                'hash',
+                '?',
                 InputOption::VALUE_NONE,
-                'Show oldest order.',
+                'Show hashed value.',
                 null
             ),
         );

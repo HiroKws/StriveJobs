@@ -13,14 +13,14 @@ class DoJobs extends Command
      *
      * @var string
      */
-    protected $name = 'command:name';
+    protected $name = 'StriveJobs:do';
 
     /**
      * The console command description.
      *
      * @var string
      */
-    protected $description = 'Command description.';
+    protected $description = 'Execute a job.';
 
     /**
      * Create a new command instance.
@@ -39,7 +39,34 @@ class DoJobs extends Command
      */
     public function fire()
     {
-        //
+        // Get API
+        $striveJobs = \App::make( 'StriveJobs\\StriveJobs' );
+
+        // Check ID if exist
+        $id = $this->argument( 'id' );
+
+        if( !$striveJobs->isExistJobs( $id ) )
+        {
+            $this->error( 'ID is not exist.' );
+            return;
+        }
+
+        // Execute specified job.
+        if( !($result = $striveJobs->executeJob( $id )) )
+        {
+            $this->error( 'Faild to execute.' );
+        }
+        else
+        {
+            $this->info( 'Executed successfully.' );
+        }
+
+        if( ($message = $striveJobs->getMessage()) != '' )
+        {
+            $this->comment( $message );
+        }
+
+        return $result;
     }
 
     /**
@@ -50,7 +77,11 @@ class DoJobs extends Command
     protected function getArguments()
     {
         return array(
-            array( 'example', InputArgument::REQUIRED, 'An example argument.' ),
+            array(
+                'id',
+                InputArgument::REQUIRED,
+                'Job ID to execute.'
+            ),
         );
     }
 
@@ -62,8 +93,17 @@ class DoJobs extends Command
     protected function getOptions()
     {
         return array(
-            array( 'example', null, InputOption::VALUE_OPTIONAL, 'An example option.', null ),
         );
+    }
+
+    /**
+     * Set commnad main name.
+     *
+     * @param string $name Command main name.
+     */
+    public function setCommandName( $name )
+    {
+        $this->setName( str_replace( 'StriveJobs', $name, $this->name ) );
     }
 
 }

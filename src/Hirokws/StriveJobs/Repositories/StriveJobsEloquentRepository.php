@@ -21,7 +21,14 @@ class StriveJobsEloquentRepository implements JobsRepositoryInterface
 
     public function get()
     {
-        return $this->striveJob->all();
+        return $this->striveJob->get();
+    }
+
+    public function getJob( $id )
+    {
+        $job = $this->striveJob->find( $id );
+        if( is_null( $job ) ) return false;
+        return $job->toArray();
     }
 
     public function add( $job, $comment = '', $argument = array( ) )
@@ -82,13 +89,36 @@ class StriveJobsEloquentRepository implements JobsRepositoryInterface
     public function getJobsWithMode( $mode, $ids )
     {
         return $this->getWhereFromMode( $this->striveJob, $mode, $ids )
-            ->get()->toArray();
+                ->get()->toArray();
     }
 
     public function changeJobStatus( $mode, $ids, $newStatus )
     {
-        return $this->getWhereFromMode($this->striveJob, $mode, $ids)
-            ->update( array( 'status' => $newStatus ) );
+        return $this->getWhereFromMode( $this->striveJob, $mode, $ids )
+                ->update( array( 'status' => $newStatus ) );
+    }
+
+    public function removeJobs( $ids )
+    {
+        return $this->striveJob->whereIn( 'id', ( array ) $ids )
+                ->delete();
+    }
+
+    public function deleteTerminatedJobs()
+    {
+        return $this->striveJob->whereStatus( 'terminated' )
+                ->delete();
+    }
+
+    public function truncateAllJob()
+    {
+        \DB::table('strive_jobs')->truncate();
+    }
+
+    public function saveArguments( $id, $data )
+    {
+        return $this->striveJob->whereId( $id )
+                ->update( array( 'argument' => $data ) );
     }
 
     private function getWhereFromMode( $query, $mode, $ids )
@@ -96,13 +126,13 @@ class StriveJobsEloquentRepository implements JobsRepositoryInterface
         switch( $mode )
         {
             case 'status' :
-                $query = $query->whereIn( 'status', $ids );
+                $query = $query->whereIn( 'status', ( array ) $ids );
                 break;
             case 'equal' :
-                $query = $query->whereIn( 'id', $ids );
+                $query = $query->whereIn( 'id', ( array ) $ids );
                 break;
             case 'notEqual' :
-                $query = $query->whereNotIn( 'id', $ids );
+                $query = $query->whereNotIn( 'id', ( array ) $ids );
                 break;
             case 'lessThan' :
                 $query = $query->where( 'id', '<', $ids );

@@ -16,6 +16,13 @@ class StriveJobs
     protected $jobClasses = array( );
 
     /**
+     * Last message from called class.
+     *
+     * @var string
+     */
+    protected $lastMessage = '';
+
+    /**
      * Repository instance for jobs.
      *
      * @var StriveJobs\Repositories\JobsRepositoryInterface
@@ -144,6 +151,94 @@ class StriveJobs
         return $affectedCount;
     }
 
+    public function executeJob( $id )
+    {
+        // Get job from ID.
+        $job = $this->repo->getJob( $id );
+
+        if( $job === false ) return false;
+
+        // Check name is exist in Class names.
+        if( !array_key_exists( $job['name'], $this->jobClasses ) ) return false;
+
+        $instance = $this->jobClasses[$job['name']];
+        $argument = json_decode( $job['argument'], true );
+        $method = 'do'.studly_case( $job['status'] );
+
+        $instance->jobId = $id;
+        $instance->status = $job['status'];
+        $instance->striveJobs = $this;
+
+        unset( $instance->message );
+
+        $this->lastMessage = '';
+
+        // At first, try to call 'do'+Status method.
+
+        if( method_exists( $instance, $method ) )
+        {
+            $result = $instance->$method( $argument );
+
+            if( isset( $instance->message ) )
+            {
+                $this->lastMessage = $instance->message;
+            }
+
+            return $result;
+        }
+
+        // If not exist 'do'+Status method in job class,
+        // call default method.
+
+        $result = $instance->doDefault( $argument );
+
+        if( isset( $instance->message ) )
+        {
+            $this->lastMessage = $instance->message;
+        }
+
+        return $result;
+    }
+
+    public function removeJobs( $ids )
+    {
+        $ids = ( array ) $ids;
+
+        if( empty( $ids ) ) return false;
+
+        if( !$this->isExistJobs( $ids ) ) return false;
+
+        $affected = $this->repo->removeJobs( $ids );
+
+        if( $affected < 1 ) false;
+
+        return $affected;
+    }
+
+    public function deleteTerminatedJobs()
+    {
+        $affected = $this->repo->deleteTerminatedJobs();
+
+        if( $affected === false ) return false;
+
+        return $affected;
+    }
+
+    public function truncateAllJob()
+    {
+        $this->repo->truncateAllJob();
+    }
+
+
+    public function saveArguments( $id, $data )
+    {
+        if( !$this->isExistJobs( ( array ) $id ) ) return false;
+
+        $result = $this->repo->saveArguments( $id, json_encode( $data ) );
+
+        return $result;
+    }
+
     public function isExistJobs( $ids )
     {
         $ids = ( array ) $ids;
@@ -160,7 +255,12 @@ class StriveJobs
         }
     }
 
-    private function isMode( $mode )
+    public function getMessage()
+    {
+        return $this->lastMessage;
+    }
+
+    public function isMode( $mode )
     {
         return in_array( $mode, array(
             'status',

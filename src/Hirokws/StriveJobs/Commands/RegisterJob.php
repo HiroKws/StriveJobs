@@ -6,14 +6,14 @@ use Illuminate\Console\Command;
 use Symfony\Component\Console\Input\InputArgument;
 use Symfony\Component\Console\Input\InputOption;
 
-class RegisterJob extends Command{
-
+class RegisterJob extends Command
+{
     /**
      * The console command name.
      *
      * @var string
      */
-    protected $name = 'sj:register';
+    protected $name = 'StriveJobs:register';
 
     /**
      * The console command description.
@@ -58,9 +58,9 @@ class RegisterJob extends Command{
         if( isset( $args['argument5'] ) ) $arguments['arg5'] = $args['argument5'];
 
         // Register this job.
-        $id = $striveJobs->registerJob( $job, $this->option('comment'), $arguments );
+        $id = $striveJobs->registerJob( $job, $this->option( 'comment' ), $arguments );
 
-        $this->info("Create new job. ID is $id.");
+        $this->info( "Create new job. ID is $id." );
     }
 
     /**
@@ -90,6 +90,16 @@ class RegisterJob extends Command{
         return array(
             array( 'comment', null, InputOption::VALUE_OPTIONAL, 'A comment', '' ),
         );
+    }
+
+    /**
+     * Set commnad main name.
+     *
+     * @param string $name Command main name.
+     */
+    public function setCommandName( $name )
+    {
+        $this->setName(str_replace( 'StriveJobs', $name, $this->name ));
     }
 
 }

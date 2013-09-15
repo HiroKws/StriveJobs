@@ -4,14 +4,14 @@ namespace StriveJobs\Commands;
 
 use Illuminate\Console\Command;
 
-class ListJobs extends Command{
-
+class ListJobs extends Command
+{
     /**
      * The console command name.
      *
      * @var string
      */
-    protected $name = 'sj:list';
+    protected $name = 'StriveJobs:list';
 
     /**
      * The console command description.
@@ -35,7 +35,7 @@ class ListJobs extends Command{
 
         foreach( $jobInfo as $info )
         {
-            $this->info( sprintf(
+            $this->line( sprintf(
                     '%d %s %s', $info->number, $info->name, $info->description ) );
         }
     }
@@ -60,6 +60,16 @@ class ListJobs extends Command{
     {
         return array(
         );
+    }
+
+    /**
+     * Set commnad main name.
+     *
+     * @param string $name Command main name.
+     */
+    public function setCommandName( $name )
+    {
+        $this->setName( str_replace( 'StriveJobs', $name, $this->name ) );
     }
 
 }

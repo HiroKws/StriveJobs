@@ -1,26 +1,24 @@
-<?php
-
-namespace StriveJobs\Commands;
+<?php namespace StriveJobs\Commands;
 
 use Illuminate\Console\Command;
 use Symfony\Component\Console\Input\InputOption;
 use Symfony\Component\Console\Input\InputArgument;
 
-class StartJob extends Command {
+class AutoExecuteJobs extends Command {
 
 	/**
 	 * The console command name.
 	 *
 	 * @var string
 	 */
-	protected $name = 'sj:start';
+	protected $name = 'StriveJobs:resume';
 
 	/**
 	 * The console command description.
 	 *
 	 * @var string
 	 */
-	protected $description = 'Start a job';
+	protected $description = 'Resume jobs faild to finished.';
 
 	/**
 	 * Create a new command instance.
@@ -39,7 +37,7 @@ class StartJob extends Command {
 	 */
 	public function fire()
 	{
-		//
+
 	}
 
 	/**
@@ -50,7 +48,7 @@ class StartJob extends Command {
 	protected function getArguments()
 	{
 		return array(
-			array('name', InputArgument::REQUIRED, 'Job name to start'),
+			array('ID', InputArgument::REQUIRED, 'Job ID to resume.'),
 		);
 	}
 
@@ -62,6 +60,7 @@ class StartJob extends Command {
 	protected function getOptions()
 	{
 		return array(
+		//	array('example', null, InputOption::VALUE_OPTIONAL, 'An example option.', null),
 		);
 	}
 

@@ -4,12 +4,13 @@ namespace StriveJobs;
 
 use Illuminate\Support\ServiceProvider;
 use StriveJobs\StriveJobs;
-use StriveJobs\Commands\StartJob;
-use StriveJobs\Commands\ResumeJobs;
+use StriveJobs\Commands\DoJobs;
 use StriveJobs\Commands\ListJobs;
 use StriveJobs\Commands\RegisterJob;
 use StriveJobs\Commands\ShowJobs;
 use StriveJobs\Commands\ChangeStatus;
+use StriveJobs\Commands\SweepJobs;
+use StriveJobs\Commands\ResetJobs;
 use StriveJobs\Repositories\StriveJobsEloquentRepository;
 
 class StriveJobsServiceProvider extends ServiceProvider
@@ -52,9 +53,12 @@ class StriveJobsServiceProvider extends ServiceProvider
     {
         // Defined prefix for config, lang, views.
         $this->package( 'hirokws/strivejobs', 'StriveJobs' );
-
+//        $this->app['config']->addNamespace( 'StriveJobs', __DIR__.'/../config' );
         // Register commands
         $this->registerCommands();
+
+        // Set commnad name.
+        $this->setCommandName();
     }
 
     /**
@@ -66,26 +70,18 @@ class StriveJobsServiceProvider extends ServiceProvider
     {
         return array(
             'StriveJobs\\StriveJobs',
-            'strivejobs.startcommand',
-            'strivejobs.resumecommand',
             'strivejobs.registercommand',
             'strivejobs.listcommand',
-            'strivejobs.showcommand' );
+            'strivejobs.showcommand',
+            'strivejobs.changecommand',
+            'strivejobs.docommand',
+            'strivejobs.sweepcommand',
+            'strivejobs.resetcommand'
+        );
     }
 
     private function registerCommands()
     {
-        // Start command
-        $this->app['strivejobs.startcommand'] = $this->app->share( function($app)
-            {
-                return new StartJob( );
-            } );
-
-        // Resume command
-        $this->app['strivejobs.resumecommand'] = $this->app->share( function($app)
-            {
-                return new ResumeJobs( );
-            } );
 
         // Register command
         $this->app['strivejobs.registercommand'] = $this->app->share( function($app)
@@ -99,27 +95,68 @@ class StriveJobsServiceProvider extends ServiceProvider
                 return new ListJobs( );
             } );
 
-       // Show jobs commnand
+        // Show jobs commnand
         $this->app['strivejobs.showcommand'] = $this->app->share( function($app)
             {
                 return new ShowJobs( );
             } );
 
-       // Change job status commnand
+        // Change job status commnand
         $this->app['strivejobs.changecommand'] = $this->app->share( function($app)
             {
                 return new ChangeStatus( );
             } );
 
+        // Execute job status commnand
+        $this->app['strivejobs.docommand'] = $this->app->share( function($app)
+            {
+                return new DoJobs( );
+            } );
+
+        // Sweep out 'terminated' jobs.
+        $this->app['strivejobs.sweepcommand'] = $this->app->share( function($app)
+            {
+                return new SweepJobs( );
+            } );
+
+        // Reset all jobs.
+        $this->app['strivejobs.resetcommand'] = $this->app->share( function($app)
+            {
+                return new ResetJobs( );
+            } );
+
         // Register all commands
         $this->commands(
-            'strivejobs.startcommand',
-            'strivejobs.resumecommand',
-            'strivejobs.listcommand',
-            'strivejobs.registercommand',
-            'strivejobs.showcommand',
-            'strivejobs.changecommand'
+            'strivejobs.listcommand', 'strivejobs.registercommand', 'strivejobs.showcommand', 'strivejobs.changecommand', 'strivejobs.docommand', 'strivejobs.sweepcommand', 'strivejobs.resetcommand'
         );
+    }
+
+    /**
+     * Set command main name from MainCommandName item of config.php.
+     *
+     */
+    private function setCommandName()
+    {
+        $this->app['strivejobs.registercommand']
+            ->setCommandName( \Config::get( 'StriveJobs::MainCommandName' ) );
+
+        $this->app['strivejobs.listcommand']
+            ->setCommandName( \Config::get( 'StriveJobs::MainCommandName' ) );
+
+        $this->app['strivejobs.showcommand']
+            ->setCommandName( \Config::get( 'StriveJobs::MainCommandName' ) );
+
+        $this->app['strivejobs.changecommand']
+            ->setCommandName( \Config::get( 'StriveJobs::MainCommandName' ) );
+
+        $this->app['strivejobs.docommand']
+            ->setCommandName( \Config::get( 'StriveJobs::MainCommandName' ) );
+
+         $this->app['strivejobs.sweepcommand']
+            ->setCommandName( \Config::get( 'StriveJobs::MainCommandName' ) );
+
+         $this->app['strivejobs.resetcommand']
+            ->setCommandName( \Config::get( 'StriveJobs::MainCommandName' ) );
     }
 
 }
