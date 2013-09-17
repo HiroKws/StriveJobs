@@ -2,11 +2,10 @@
 
 namespace StriveJobs\Commands;
 
-use Illuminate\Console\Command;
-use Symfony\Component\Console\Input\InputOption;
+use StriveJobs\Commands\BaseCommand;
 use Symfony\Component\Console\Input\InputArgument;
 
-class DoJobs extends Command
+class DoJob extends BaseCommand
 {
     /**
      * The console command name.
@@ -21,16 +20,6 @@ class DoJobs extends Command
      * @var string
      */
     protected $description = 'Execute a job.';
-
-    /**
-     * Create a new command instance.
-     *
-     * @return void
-     */
-    public function __construct()
-    {
-        parent::__construct();
-    }
 
     /**
      * Execute the console command.
@@ -48,7 +37,7 @@ class DoJobs extends Command
         if( !$striveJobs->isExistJobs( $id ) )
         {
             $this->error( 'ID is not exist.' );
-            return;
+            return 1;
         }
 
         // Execute specified job.
@@ -66,7 +55,7 @@ class DoJobs extends Command
             $this->comment( $message );
         }
 
-        return $result;
+        return 0;
     }
 
     /**
@@ -94,16 +83,6 @@ class DoJobs extends Command
     {
         return array(
         );
-    }
-
-    /**
-     * Set commnad main name.
-     *
-     * @param string $name Command main name.
-     */
-    public function setCommandName( $name )
-    {
-        $this->setName( str_replace( 'StriveJobs', $name, $this->name ) );
     }
 
 }

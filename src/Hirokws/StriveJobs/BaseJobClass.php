@@ -9,12 +9,9 @@ use StriveJobs\Exceptions\BadMethodCallException;
  *
  * This class needed following properties.
  *
- *  striveJobs : API instance.
- *  jobId      : Calling job's ID.
- *  status     : Calling Job's status.
- *      $instance->status = $job['status'];
- *      $instance->callingMethod = $method;
- *      $instance->striveJobs =$this;
+ *  striveJobs    : API instance.
+ *  jobId         : Calling job's ID.
+ *  status        : Calling Job's status.
  *
  * And if needed to display message,
  * put it as 'message' property.
@@ -22,7 +19,8 @@ use StriveJobs\Exceptions\BadMethodCallException;
  */
 class BaseJobClass
 {
-    public function saveData($data)
+
+    public function saveArguments( $data )
     {
         return $this->striveJobs->saveArguments( $this->jobId, $data );
     }
@@ -42,12 +40,17 @@ class BaseJobClass
         return $this->removeMe();
     }
 
+    public function setMessage($message)
+    {
+        $this->message = $message;
+    }
+
     /**
      * Handling dynamic method call.
      *
      * @param string $name
      * @param array $arguments
-     * @return mix
+     * @return boolan Result of job status changed.
      */
     public function __call( $name, $arguments )
     {

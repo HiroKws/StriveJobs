@@ -2,11 +2,11 @@
 
 namespace StriveJobs\Commands;
 
-use Illuminate\Console\Command;
+use StriveJobs\Commands\BaseCommand;
 use Symfony\Component\Console\Input\InputOption;
 use Symfony\Component\Console\Input\InputArgument;
 
-class ShowJobs extends Command
+class ShowJobs extends BaseCommand
 {
     /**
      * The console command name.
@@ -21,16 +21,6 @@ class ShowJobs extends Command
      * @var string
      */
     protected $description = 'Show jobs infomation.';
-
-    /**
-     * Create a new command instance.
-     *
-     * @return void
-     */
-    public function __construct()
-    {
-        parent::__construct();
-    }
 
     /**
      * Execute the console command.
@@ -59,6 +49,8 @@ class ShowJobs extends Command
         {
             $this->line( sprintf( "%d %s(%s) \"%s\"", $job['id'], $job['name'], $job['status'], $job["comment"] ) );
         }
+
+        return 0;
     }
 
     /**
@@ -96,16 +88,6 @@ class ShowJobs extends Command
                 null
             ),
         );
-    }
-
-    /**
-     * Set commnad main name.
-     *
-     * @param string $name Command main name.
-     */
-    public function setCommandName( $name )
-    {
-        $this->setName( str_replace( 'StriveJobs', $name, $this->name ) );
     }
 
 }

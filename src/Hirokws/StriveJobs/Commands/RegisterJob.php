@@ -2,11 +2,11 @@
 
 namespace StriveJobs\Commands;
 
-use Illuminate\Console\Command;
+use StriveJobs\Commands\BaseCommand;
 use Symfony\Component\Console\Input\InputArgument;
 use Symfony\Component\Console\Input\InputOption;
 
-class RegisterJob extends Command
+class RegisterJob extends BaseCommand
 {
     /**
      * The console command name.
@@ -29,38 +29,37 @@ class RegisterJob extends Command
      */
     public function fire()
     {
-        // Don't use constructor to get a instance.
-        // Because everytime make extra instance.
+        // Get all job classes.
         $striveJobs = \App::make( 'StriveJobs\\StriveJobs' );
-
         $jobClasses = $striveJobs->getJobClasses();
 
         // Get all argument
         $args = $this->argument();
 
-        // Job argument handling
+        // Check if exist specified class.
         $job = $args['job'];
 
         if( ( is_numeric( $job ) and ( $job < 1 or $job > count( $jobClasses )) ) or
             (!is_numeric( $job ) and !key_exists( $job, $jobClasses )) )
         {
-            $this->error( 'Job is an integer or name. '.
-                'Please confirm by ListJobs commnad.' );
-            return;
+            $this->error( 'Job is an integer or name of job class. ' );
+            return 1;
         }
 
         // Arguments handling
         $arguments = array( );
-        if( isset( $args['argument1'] ) ) $arguments['arg1'] = $args['argument1'];
-        if( isset( $args['argument2'] ) ) $arguments['arg2'] = $args['argument2'];
-        if( isset( $args['argument3'] ) ) $arguments['arg3'] = $args['argument3'];
-        if( isset( $args['argument4'] ) ) $arguments['arg4'] = $args['argument4'];
-        if( isset( $args['argument5'] ) ) $arguments['arg5'] = $args['argument5'];
+
+        for( $i = 1; $i <= 5; $i++ )
+        {
+            if( isset( $args['argument'.$i] ) ) $arguments['arg'.$i] = $args['argument'.$i];
+        }
 
         // Register this job.
         $id = $striveJobs->registerJob( $job, $this->option( 'comment' ), $arguments );
 
         $this->info( "Create new job. ID is $id." );
+
+        return 0; ;
     }
 
     /**
@@ -90,16 +89,6 @@ class RegisterJob extends Command
         return array(
             array( 'comment', null, InputOption::VALUE_OPTIONAL, 'A comment', '' ),
         );
-    }
-
-    /**
-     * Set commnad main name.
-     *
-     * @param string $name Command main name.
-     */
-    public function setCommandName( $name )
-    {
-        $this->setName(str_replace( 'StriveJobs', $name, $this->name ));
     }
 
 }

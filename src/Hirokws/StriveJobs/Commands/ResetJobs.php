@@ -2,10 +2,10 @@
 
 namespace StriveJobs\Commands;
 
-use Illuminate\Console\Command;
+use StriveJobs\Commands\BaseCommand;
 use Symfony\Component\Console\Input\InputOption;
 
-class ResetJobs extends Command
+class ResetJobs extends BaseCommand
 {
     /**
      * The console command name.
@@ -22,42 +22,36 @@ class ResetJobs extends Command
     protected $description = 'Reset all jobs.';
 
     /**
-     * Create a new command instance.
-     *
-     * @return void
-     */
-    public function __construct()
-    {
-        parent::__construct();
-    }
-
-    /**
      * Execute the console command.
      *
      * @return void
      */
-    public function fire()
+    public function fire() // @hiro パスワードを引数でも
     {
+        // Get password.
         $password = trim( $this->secret( 'Password ? : ' ) );
 
+        // Hashed password display mode.
         if( $this->option( 'hash' ) )
         {
             $this->info( \Hash::make( $password ) );
-            return;
+            return 0;
         }
 
+        // Check password.
         if( !\Hash::check( $password, \Config::get( 'StriveJobs::HashedResetPassword' ) ) )
         {
             $this->error( 'Entered password faild to match.' );
-            return;
+            return 1;
         }
 
-        // Get API instance
+        // Truncate jobs table.
         $striveJobs = \App::make( 'StriveJobs\\StriveJobs' );
-
         $striveJobs->truncateAllJob();
 
         $this->info( 'Reset all job.' );
+
+        return 0;
     }
 
     /**
@@ -87,16 +81,6 @@ class ResetJobs extends Command
                 null
             ),
         );
-    }
-
-    /**
-     * Set commnad main name.
-     *
-     * @param string $name Command main name.
-     */
-    public function setCommandName( $name )
-    {
-        $this->setName( str_replace( 'StriveJobs', $name, $this->name ) );
     }
 
 }

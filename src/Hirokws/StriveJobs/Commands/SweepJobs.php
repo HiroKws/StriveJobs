@@ -2,9 +2,9 @@
 
 namespace StriveJobs\Commands;
 
-use Illuminate\Console\Command;
+use StriveJobs\Commands\BaseCommand;
 
-class SweepJobs extends Command
+class SweepJobs extends BaseCommand
 {
     /**
      * The console command name.
@@ -21,30 +21,20 @@ class SweepJobs extends Command
     protected $description = 'Delete all \'terminated\' job.';
 
     /**
-     * Create a new command instance.
-     *
-     * @return void
-     */
-    public function __construct()
-    {
-        parent::__construct();
-    }
-
-    /**
      * Execute the console command.
      *
      * @return void
      */
     public function fire()
     {
-        // Get API instance
+        // Delete all jobs has terminated' status.
         $striveJobs = \App::make( 'StriveJobs\\StriveJobs' );
-
         $affected = $striveJobs->deleteTerminatedJobs();
 
         if( $affected === false )
         {
             $this->error( 'Can\'t delete any jobs.' );
+            return 1;
         }
         elseif( $affected > 0 )
         {
@@ -54,6 +44,8 @@ class SweepJobs extends Command
         {
             $this->info( 'Nothing done.' );
         }
+
+        return 0;
     }
 
     /**
@@ -76,16 +68,6 @@ class SweepJobs extends Command
     {
         return array(
         );
-    }
-
-    /**
-     * Set commnad main name.
-     *
-     * @param string $name Command main name.
-     */
-    public function setCommandName( $name )
-    {
-        $this->setName( str_replace( 'StriveJobs', $name, $this->name ) );
     }
 
 }

@@ -4,13 +4,14 @@ namespace StriveJobs;
 
 use Illuminate\Support\ServiceProvider;
 use StriveJobs\StriveJobs;
-use StriveJobs\Commands\DoJobs;
+use StriveJobs\Commands\DoJob;
 use StriveJobs\Commands\ListJobs;
 use StriveJobs\Commands\RegisterJob;
 use StriveJobs\Commands\ShowJobs;
 use StriveJobs\Commands\ChangeStatus;
 use StriveJobs\Commands\SweepJobs;
 use StriveJobs\Commands\ResetJobs;
+use StriveJobs\Commands\AutoJobs;
 use StriveJobs\Repositories\StriveJobsEloquentRepository;
 
 class StriveJobsServiceProvider extends ServiceProvider
@@ -53,7 +54,7 @@ class StriveJobsServiceProvider extends ServiceProvider
     {
         // Defined prefix for config, lang, views.
         $this->package( 'hirokws/strivejobs', 'StriveJobs' );
-//        $this->app['config']->addNamespace( 'StriveJobs', __DIR__.'/../config' );
+
         // Register commands
         $this->registerCommands();
 
@@ -76,7 +77,8 @@ class StriveJobsServiceProvider extends ServiceProvider
             'strivejobs.changecommand',
             'strivejobs.docommand',
             'strivejobs.sweepcommand',
-            'strivejobs.resetcommand'
+            'strivejobs.resetcommand',
+            'strivejobs.autocommand'
         );
     }
 
@@ -110,7 +112,7 @@ class StriveJobsServiceProvider extends ServiceProvider
         // Execute job status commnand
         $this->app['strivejobs.docommand'] = $this->app->share( function($app)
             {
-                return new DoJobs( );
+                return new DoJob( );
             } );
 
         // Sweep out 'terminated' jobs.
@@ -125,9 +127,15 @@ class StriveJobsServiceProvider extends ServiceProvider
                 return new ResetJobs( );
             } );
 
+        // Execute automatically selected jobs by rules.
+        $this->app['strivejobs.autocommand'] = $this->app->share( function($app)
+            {
+                return new AutoJobs( );
+            } );
+
         // Register all commands
         $this->commands(
-            'strivejobs.listcommand', 'strivejobs.registercommand', 'strivejobs.showcommand', 'strivejobs.changecommand', 'strivejobs.docommand', 'strivejobs.sweepcommand', 'strivejobs.resetcommand'
+            'strivejobs.listcommand', 'strivejobs.registercommand', 'strivejobs.showcommand', 'strivejobs.changecommand', 'strivejobs.docommand', 'strivejobs.sweepcommand', 'strivejobs.resetcommand', 'strivejobs.autocommand'
         );
     }
 
@@ -137,26 +145,31 @@ class StriveJobsServiceProvider extends ServiceProvider
      */
     private function setCommandName()
     {
+        $main = \Config::get( 'StriveJobs::MainCommandName' );
+        
         $this->app['strivejobs.registercommand']
-            ->setCommandName( \Config::get( 'StriveJobs::MainCommandName' ) );
+            ->setCommandName( $main, \Config::get( 'StriveJobs::SubCommandNames.Register' ) );
 
         $this->app['strivejobs.listcommand']
-            ->setCommandName( \Config::get( 'StriveJobs::MainCommandName' ) );
+            ->setCommandName( $main, \Config::get( 'StriveJobs::SubCommandNames.List' ) );
 
         $this->app['strivejobs.showcommand']
-            ->setCommandName( \Config::get( 'StriveJobs::MainCommandName' ) );
+            ->setCommandName( $main, \Config::get( 'StriveJobs::SubCommandNames.Show' ) );
 
         $this->app['strivejobs.changecommand']
-            ->setCommandName( \Config::get( 'StriveJobs::MainCommandName' ) );
+            ->setCommandName( $main, \Config::get( 'StriveJobs::SubCommandNames.Change' ) );
 
         $this->app['strivejobs.docommand']
-            ->setCommandName( \Config::get( 'StriveJobs::MainCommandName' ) );
+            ->setCommandName( $main, \Config::get( 'StriveJobs::SubCommandNames.Do' ) );
 
-         $this->app['strivejobs.sweepcommand']
-            ->setCommandName( \Config::get( 'StriveJobs::MainCommandName' ) );
+        $this->app['strivejobs.sweepcommand']
+            ->setCommandName( $main, \Config::get( 'StriveJobs::SubCommandNames.Sweep' ) );
 
-         $this->app['strivejobs.resetcommand']
-            ->setCommandName( \Config::get( 'StriveJobs::MainCommandName' ) );
+        $this->app['strivejobs.resetcommand']
+            ->setCommandName( $main, \Config::get( 'StriveJobs::SubCommandNames.Reset' ) );
+
+        $this->app['strivejobs.autocommand']
+            ->setCommandName( $main, \Config::get( 'StriveJobs::SubCommandNames.Auto' ) );
     }
 
 }

@@ -2,11 +2,11 @@
 
 namespace StriveJobs\Commands;
 
-use Illuminate\Console\Command;
+use StriveJobs\Commands\BaseCommand;
 use Symfony\Component\Console\Input\InputOption;
 use Symfony\Component\Console\Input\InputArgument;
 
-class ChangeStatus extends Command
+class ChangeStatus extends BaseCommand
 {
     /**
      * The console command name.
@@ -21,16 +21,6 @@ class ChangeStatus extends Command
      * @var string
      */
     protected $description = 'Change job status.';
-
-    /**
-     * Create a new command instance.
-     *
-     * @return void
-     */
-    public function __construct()
-    {
-        parent::__construct();
-    }
 
     /**
      * Execute the console command.
@@ -48,7 +38,7 @@ class ChangeStatus extends Command
         if( $message != '' )
         {
             $this->error( $message );
-            return;
+            return 1;
         }
 
         // Specified --status
@@ -106,16 +96,19 @@ class ChangeStatus extends Command
         // Dry run
         if( $args['dry'] )
         {
-            $changeStatus = \App::make( 'StriveJobs\\Services\\ChangeStatusDryRun', array( $striveJobs ) );
+            $changeStatus = \App::make( 'StriveJobs\\Services\\ChangeStatusDryRun', array(
+                    $striveJobs ) );
             $changeStatus->change( $this, $mode, $ids, $args['newStatus'] );
 
-            return;
+            return 0;
         }
 
         // Call change status API
         $affected = $striveJobs->changeJobStatus( $mode, $ids, $args['newStatus'] );
 
         $this->info( "Updated $affected job(s)." );
+
+        return 0;
     }
 
     /**
@@ -199,16 +192,6 @@ class ChangeStatus extends Command
                 null
             ),
         );
-    }
-
-    /**
-     * Set commnad main name.
-     *
-     * @param string $name Command main name.
-     */
-    public function setCommandName( $name )
-    {
-        $this->setName( str_replace( 'StriveJobs', $name, $this->name ) );
     }
 
 }

@@ -2,9 +2,9 @@
 
 namespace StriveJobs\Commands;
 
-use Illuminate\Console\Command;
+use StriveJobs\Commands\BaseCommand;
 
-class ListJobs extends Command
+class ListJobs extends BaseCommand
 {
     /**
      * The console command name.
@@ -27,9 +27,7 @@ class ListJobs extends Command
      */
     public function fire()
     {
-        // Don't use constructor to get a instance.
-        // Because everytime make extra instance.
-
+        // Get all job classes.
         $jobInfoInstance = \App::make( 'StriveJobs\\Services\\ListJobInfo' );
         $jobInfo = $jobInfoInstance->get();
 
@@ -38,6 +36,8 @@ class ListJobs extends Command
             $this->line( sprintf(
                     '%d %s %s', $info->number, $info->name, $info->description ) );
         }
+
+        return 0;
     }
 
     /**
@@ -60,16 +60,6 @@ class ListJobs extends Command
     {
         return array(
         );
-    }
-
-    /**
-     * Set commnad main name.
-     *
-     * @param string $name Command main name.
-     */
-    public function setCommandName( $name )
-    {
-        $this->setName( str_replace( 'StriveJobs', $name, $this->name ) );
     }
 
 }

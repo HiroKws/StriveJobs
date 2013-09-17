@@ -86,6 +86,39 @@ class StriveJobsEloquentRepository implements JobsRepositoryInterface
         return $query->get()->toArray();
     }
 
+    public function getJobsByRules( $mode, $rules )
+    {
+        if( $mode == "Descending" )
+        {
+            $query = $this->striveJob
+                    ->where( 'status', '!=', 'terminated' )
+                    ->orderBy( 'id', 'asc' )
+                    ->get()->toArray();
+        }
+        elseif( $mode == "Ascending" )
+        {
+            $query = $this->striveJob
+                    ->where( 'status', '!=', 'terminated' )
+                    ->orderBy( 'id', 'desc' )
+                    ->get()->toArray();
+        }
+        elseif( $mode == "ByRules" )
+        {
+            $query = array( );
+
+            foreach( $rules as $status => $sort )
+            {
+                $query = array_merge( $query, $this->striveJob
+                        ->whereStatus( $status )->orderBy( 'id', $sort )->get()->toArray() );
+            }
+        }
+        else
+        {
+            return false;
+        }
+        return $query;
+    }
+
     public function getJobsWithMode( $mode, $ids )
     {
         return $this->getWhereFromMode( $this->striveJob, $mode, $ids )
@@ -112,7 +145,7 @@ class StriveJobsEloquentRepository implements JobsRepositoryInterface
 
     public function truncateAllJob()
     {
-        \DB::table('strive_jobs')->truncate();
+        \DB::table( 'strive_jobs' )->truncate();
     }
 
     public function saveArguments( $id, $data )

@@ -133,6 +133,55 @@ class StriveJobs
         return $jobs;
     }
 
+    public function getJobsByRules( $rules )
+    {
+        $condition = array( );
+
+        if( $rules == '' )
+        {
+            $mode = "Descending";
+        }
+        elseif( $rules == 'Ascending' )
+        {
+            $mode = "Ascending";
+        }
+        else
+        {
+            if( !is_array( $rules ) ) return false;
+
+            $mode = "ByRules";
+
+            foreach( $rules as $status => $sort )
+            {
+                switch( $sort )
+                {
+                    case 'o' :
+                        $sortBy = 'desc';
+                        break;
+                    case 'l' :
+                        $sortBy = 'asc';
+                        break;
+                    default:
+                        return false;
+                        break;
+                }
+
+                $condition[$status] = $sortBy;
+            }
+        }
+
+        try
+        {
+            $jobs = $this->repo->getJobsByRules( $mode, $condition );
+        }
+        catch( IoException $e )
+        {
+            return false;
+        }
+
+        return $jobs;
+    }
+
     public function changeJobStatus( $mode, $ids, $newStatus )
     {
         if( !$this->isMode( $mode ) ) return false;
@@ -151,14 +200,14 @@ class StriveJobs
         return $affectedCount;
     }
 
-    public function executeJob( $id )
+    public function executeJob( $id ) //　@hiro 複数処理可能にし、エクゼキューターを独立させる
     {
         // Get job from ID.
         $job = $this->repo->getJob( $id );
 
         if( $job === false ) return false;
 
-        // Check name is exist in Class names.
+        // Check if name exists in Class names.
         if( !array_key_exists( $job['name'], $this->jobClasses ) ) return false;
 
         $instance = $this->jobClasses[$job['name']];
@@ -200,6 +249,24 @@ class StriveJobs
         return $result;
     }
 
+    public function executeByRules( $rules, $maxExec )
+    {
+        $jobs = $this->getJobsByRules( $rules );
+
+        if( $jobs === false ) return false;
+
+        $i = 1;
+
+        foreach( $jobs as $job )
+        {
+            if( $i++ > $maxExec ) return true;
+
+            if( $this->executeJob( $job['id'] ) === false ) return false;
+        }
+
+        return true;
+    }
+
     public function removeJobs( $ids )
     {
         $ids = ( array ) $ids;
@@ -228,7 +295,6 @@ class StriveJobs
     {
         $this->repo->truncateAllJob();
     }
-
 
     public function saveArguments( $id, $data )
     {
