@@ -110,7 +110,7 @@ class AutoJobs extends BaseCommand
                 'execute',
                 'e',
                 InputOption::VALUE_OPTIONAL,
-                'Specify how many job will execute.',
+                'Specify how many jobs will execute.',
                 1
             ),
             array(

@@ -27,7 +27,9 @@ class StriveJobsEloquentRepository implements JobsRepositoryInterface
     public function getJob( $id )
     {
         $job = $this->striveJob->find( $id );
+
         if( is_null( $job ) ) return false;
+
         return $job->toArray();
     }
 

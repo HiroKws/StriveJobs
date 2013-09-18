@@ -6,6 +6,9 @@ use StriveJobs\StriveJobsInterface;
 use StriveJobs\Exceptions\InvalidArgumentException;
 use StriveJobs\Exceptions\IoException;
 
+/**
+ * Job controle APIs
+ */
 class StriveJobs
 {
     /**
@@ -29,16 +32,20 @@ class StriveJobs
      */
     protected $repo;
 
+    /**
+     * The constructor to get needed instance.
+     */
     public function __construct()
     {
+        // Get jobs repository.
         $this->repo = \App::make( 'StriveJobs\\Repositories\\JobsRepositoryInterface' );
     }
 
     /**
-     * Register job class.
+     * Register job classes.
      *
      * @param Mix $jobClasses single or array of StriveJobs\StriveJobsInterface instance
-     * @throws InvalidArgumentException
+     * @throws StriveJobs\Exceptions\InvalidArgumentException
      */
     public function registerJobClass( $jobClasses )
     {
@@ -71,9 +78,9 @@ class StriveJobs
      *
      * @param mix $job Job class number or job name.
      * @param string $comment Comment for this job.
-     * @param array $arguments Argument array for job.
-     * @return mix  Return false when faild to save, otherwise job id.
-     * @throws InvalidArgumentException
+     * @param array $arguments Array pass into this job.
+     * @return mix  Return false when faild, otherwise job id.
+     * @throws StriveJobs\Exceptions\InvalidArgumentException
      */
     public function registerJob( $job, $comment = '', $arguments = array( ) )
     {
@@ -101,6 +108,14 @@ class StriveJobs
         return $jobId;
     }
 
+    /**
+     * Job getter.
+     *
+     * @param string $status Status to get, '' for all status.
+     * @param integer $limit How many jobs get, 0 for all.
+     * @param boolean $latestedOrder True is later order. Older order is dafault.
+     * @return mix false when faild, otherwise array of jobs.
+     */
     public function getJobs( $status = '', $limit = 0, $latestedOrder = false )
     {
         try
@@ -115,6 +130,22 @@ class StriveJobs
         return $jobs;
     }
 
+    /**
+     * Get jobs with mode as condition.
+     *
+     * $mode:               $ids:
+     *  'status'             Array of statuses.
+     *  'equal'              Array of IDs.
+     *  'notEqual'           Array of IDs.
+     *  'lessThan'           Single ID.
+     *  'lessThanEqual'      Single ID.
+     *  'greaterThan'        Single ID.
+     *  'greaterThanEqual'   Single ID.
+     *
+     * @param string $mode Getting mode.
+     * @param mix $ids Single id or array of IDs or status.
+     * @return mix False when faild, otherwise array of jobs.
+     */
     public function getJobsWithMode( $mode, $ids )
     {
         if( !$this->isMode( $mode ) ) return false;
@@ -133,6 +164,20 @@ class StriveJobs
         return $jobs;
     }
 
+    /**
+     * Getting jobs by specifed rules.
+     *
+     * $rules:
+     *  ''               Get all by descending order.
+     *  'Ascending'      Get all by asscending order.
+     *  Array of rules.  A rule format are :
+     *                     'status:o' : Give high priorty for older jobs.
+     *                     'status:l' : Give high priorty for later jobs.
+     *                   Rules will be applyed with indexed.
+     *
+     * @param mix $rules Getting rule.
+     * @return mix False when faild, otherwise array of jobs.
+     */
     public function getJobsByRules( $rules )
     {
         $condition = array( );
@@ -182,6 +227,23 @@ class StriveJobs
         return $jobs;
     }
 
+    /**
+     * Change job status.
+     *
+     * $mode:               $ids:
+     *  'status'             Array of statuses.
+     *  'equal'              Array of IDs.
+     *  'notEqual'           Array of IDs.
+     *  'lessThan'           Single ID.
+     *  'lessThanEqual'      Single ID.
+     *  'greaterThan'        Single ID.
+     *  'greaterThanEqual'   Single ID.
+     *
+     * @param string $mode Matching mode.
+     * @param mix $ids Single ID or array of IDs.
+     * @param string $newStatus New status.
+     * @return mix False when faild, otherwise changed jobs' count.
+     */
     public function changeJobStatus( $mode, $ids, $newStatus )
     {
         if( !$this->isMode( $mode ) ) return false;
@@ -200,6 +262,12 @@ class StriveJobs
         return $affectedCount;
     }
 
+    /**
+     * Execute a job.
+     *
+     * @param integer $id Job ID.
+     * @return boolean execution result.
+     */
     public function executeJob( $id ) //　@hiro 複数処理可能にし、エクゼキューターを独立させる
     {
         // Get job from ID.
@@ -249,6 +317,21 @@ class StriveJobs
         return $result;
     }
 
+    /**
+     * Execute jobs matched with conditions.
+     *
+     * $rules:
+     *  ''               Get all by descending order.
+     *  'Ascending'      Get all by asscending order.
+     *  Array of rules.  A rule format are :
+     *                     'status:o' : Give high priorty for older jobs.
+     *                     'status:l' : Give high priorty for later jobs.
+     *                   Rules will be applyed with indexed.
+     *
+     * @param type $rules
+     * @param integer $maxExec
+     * @return boolean Execution result.
+     */
     public function executeByRules( $rules, $maxExec )
     {
         $jobs = $this->getJobsByRules( $rules );
@@ -267,6 +350,12 @@ class StriveJobs
         return true;
     }
 
+    /**
+     * Remove specified jobs.
+     *
+     * @param array $ids Deleting IDs.
+     * @return mix False when faild, otherwise count of deleted jobs.
+     */
     public function removeJobs( $ids )
     {
         $ids = ( array ) $ids;
@@ -282,6 +371,11 @@ class StriveJobs
         return $affected;
     }
 
+    /**
+     * Delete jobs has 'terminated' status.
+     *
+     * @return mix False when faild, otherwise count of deleted jobs.
+     */
     public function deleteTerminatedJobs()
     {
         $affected = $this->repo->deleteTerminatedJobs();
@@ -291,11 +385,21 @@ class StriveJobs
         return $affected;
     }
 
+    /**
+     * Truncate and reset all jobs.
+     */
     public function truncateAllJob()
     {
         $this->repo->truncateAllJob();
     }
 
+    /**
+     * Save single job's arguments.
+     *
+     * @param integer $id Job ID.
+     * @param array $data Arguments
+     * @return boolean Result of save.
+     */
     public function saveArguments( $id, $data )
     {
         if( !$this->isExistJobs( ( array ) $id ) ) return false;
@@ -305,7 +409,15 @@ class StriveJobs
         return $result;
     }
 
-    public function isExistJobs( $ids )
+    /**
+     * Check IDs is exist.
+     *
+     * True will be retured when all Ids existed.
+     *
+     * @param mix $ids Single ID or array of IDs.
+     * @return boolean Flase when failed, or result of check.
+     */
+    public function isExistJobs( $ids ) // @hiro 失敗時と見つからない場合の切り分けは必要か？
     {
         $ids = ( array ) $ids;
 
@@ -321,11 +433,25 @@ class StriveJobs
         }
     }
 
+    /**
+     * Get last message.
+     *
+     * The message was saved by executed job class.
+     *
+     * @return string Message.
+     */
     public function getMessage()
     {
         return $this->lastMessage;
     }
 
+
+    /**
+     * Check mode is correct.
+     *
+     * @param string $mode Checking mode string.
+     * @return boolean True when correct.
+     */
     public function isMode( $mode )
     {
         return in_array( $mode, array(
