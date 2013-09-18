@@ -1,6 +1,7 @@
 <?php
 
-class TestCase extends Illuminate\Foundation\Testing\TestCase
+// class TestCase extends Illuminate\Foundation\Testing\TestCase
+class TestCase extends Orchestra\Testbench\TestCase
 {
 
     /**
@@ -8,18 +9,19 @@ class TestCase extends Illuminate\Foundation\Testing\TestCase
      *
      * @return Symfony\Component\HttpKernel\HttpKernelInterface
      */
-    public function createApplication()
-    {
-        $unitTesting = true;
-
-        $testEnvironment = 'testing';
-
-        return require __DIR__.'/../../../../bootstrap/start.php';
-    }
-
     public function tearDown()
     {
         \Mockery::close();
+    }
+
+    protected function getPackageProviders()
+    {
+        return array( 'StriveJobs\\StriveJobsServiceProvider' );
+    }
+
+    protected function getPackageAliases()
+    {
+        return array( 'SJ' => 'StriveJobs\\StriveJobsFacade' );
     }
 
 }

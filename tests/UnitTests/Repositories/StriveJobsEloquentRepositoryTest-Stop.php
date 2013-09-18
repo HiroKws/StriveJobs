@@ -4,13 +4,10 @@ use Mockery as m;
 use StriveJobs\Repositories\StriveJobsEloquentRepository;
 
 class StriveJobsEloquentRepositoryTest extends TestCase{
-
-    /**
-     * @runInSeparateProcess
-     */
+// @hiro Eloquentのパーシャルモックがうまく動作しない。
     public function testAll()
     {
-        $mock = m::mock( 'alias:StriveJobs\\EloquentModels\\StriveJob' );
+        $mock = m::mock( 'StriveJobs\\EloquentModels\\StriveJob[all]' );
         $mock->shouldReceive( 'all' )
             ->once()
             ->andReturn( 'Now testing' );
@@ -20,9 +17,6 @@ class StriveJobsEloquentRepositoryTest extends TestCase{
         $this->assertEquals( 'Now testing', $repo->get() );
     }
 
-    /**
-     * @runInSeparateProcess
-     */
     public function testGet()
     {
         $mock = m::mock( 'alias:StriveJobs\\EloquentModels\\StriveJob' );

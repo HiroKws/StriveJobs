@@ -1,9 +1,9 @@
 {
     "name": "hirokws/strivejobs",
-    "description": "Start/resume/cancel jobs from web/commands without Laravel queue facility.",
+    "description": "Job controlle system.",
     "license": "MIT",
     "keywords": [
-        "laravel", "job"
+        "laravel", "job", "cron"
     ],
     "authors": [
         {
@@ -12,22 +12,23 @@
             "role": "developer"
         }
     ],
-    "require": {
-        "php": ">=5.3.0"
-    },
-    "require-dev": {
-        "laravel/framework": ">=4.0.0",
-        "phpunit/phpunit": "3.7.*@dev",
-        "mockery/mockery": "0.8.*"
-    },
     "autoload": {
         "psr-0": {
-            "StriveJobs": "src/Hirokws/"
+            "StriveJobs\\": "src/Hirokws/"
         },
         "classmap": [
             "src/migrations",
             "tests"
+
         ]
+    },
+    "require": {
+        "laravel/framework": ">=4.0.0"
+    },
+    "require-dev": {
+        "orchestra/testbench": "2.0.*",
+        "phpunit/phpunit": "3.7.*@dev",
+        "mockery/mockery": "0.8.*"
     },
     "minimum-stability": "dev"
 }

@@ -85,7 +85,8 @@ class RegisterJobTest extends TestCase
         App::instance( 'StriveJobs\\StriveJobs', $mock );
 
         $tester = new CommandTester( new RegisterJob );
-        $tester->execute( array( 'job' => 'Job3', 'argument1' => 'Arg1', 'argument2' => 'Arg2', 'argument3' => 'Arg3', 'argument4' => 'Arg4', 'argument5' => 'Arg5' ) );
+        $tester->execute( array( 'job'       => 'Job3', 'argument1' => 'Arg1', 'argument2' => 'Arg2',
+            'argument3' => 'Arg3', 'argument4' => 'Arg4', 'argument5' => 'Arg5' ) );
 
         $this->assertEquals( "Create new job. ID is 13.\n", $tester->getDisplay() );
     }
@@ -106,8 +107,7 @@ class RegisterJobTest extends TestCase
         $tester = new CommandTester( new RegisterJob );
         $tester->execute( array( 'job' => '4' ) );
 
-        $this->assertEquals( 'Job is an integer or name. '.
-            'Please confirm by ListJobs commnad.'.PHP_EOL, $tester->getDisplay() );
+        $this->assertEquals( trim( 'Job is an integer or name of job class.' ), trim( $tester->getDisplay() ) );
     }
 
     public function testFireWithLessThanOneJobNumber()
@@ -126,8 +126,7 @@ class RegisterJobTest extends TestCase
         $tester = new CommandTester( new RegisterJob );
         $tester->execute( array( 'job' => '0' ) );
 
-        $this->assertEquals( 'Job is an integer or name. '.
-            'Please confirm by ListJobs commnad.'.PHP_EOL, $tester->getDisplay() );
+        $this->assertEquals( trim( 'Job is an integer or name of job class.' ), trim( $tester->getDisplay() ) );
     }
 
     public function testFireWithNoExistJobName()
@@ -146,8 +145,7 @@ class RegisterJobTest extends TestCase
         $tester = new CommandTester( new RegisterJob );
         $tester->execute( array( 'job' => 'No Matched String' ) );
 
-        $this->assertEquals( 'Job is an integer or name. '.
-            'Please confirm by ListJobs commnad.'.PHP_EOL, $tester->getDisplay() );
+        $this->assertEquals( trim( 'Job is an integer or name of job class.' ), trim( $tester->getDisplay() ) );
     }
 
     public function testFireWithCommnet()
@@ -166,7 +164,7 @@ class RegisterJobTest extends TestCase
         App::instance( 'StriveJobs\\StriveJobs', $mock );
 
         $tester = new CommandTester( new RegisterJob );
-        $tester->execute( array( 'job' => '1', '--comment' => 'Comm' ) );
+        $tester->execute( array( 'job'       => '1', '--comment' => 'Comm' ) );
 
         $this->assertEquals( "Create new job. ID is 20.\n", $tester->getDisplay() );
     }
