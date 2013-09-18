@@ -150,10 +150,16 @@ class StriveJobsEloquentRepository implements JobsRepositoryInterface
         \DB::table( 'strive_jobs' )->truncate();
     }
 
-    public function saveArguments( $id, $data )
+    public function putArguments( $id, $data )
     {
         return $this->striveJob->whereId( $id )
                 ->update( array( 'argument' => $data ) );
+    }
+
+    public function putComment( $id, $comment )
+    {
+        return $this->striveJob->whereId( $id )
+                ->update( array( 'comment' => $comment ) );
     }
 
     private function getWhereFromMode( $query, $mode, $ids )

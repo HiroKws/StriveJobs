@@ -19,10 +19,24 @@ use StriveJobs\Exceptions\BadMethodCallException;
  */
 class BaseJobClass
 {
-
-    public function saveArguments( $data )
+// @hiro コメント必要
+    public function putArguments( $data )
     {
-        return $this->striveJobs->saveArguments( $this->jobId, $data );
+        return $this->striveJobs->putArguments( $this->jobId, $data );
+    }
+
+    public function getComment()
+    {
+        return $this->comment;
+    }
+
+    public function putComment( $comment )
+    {
+        $result = $this->striveJobs->putComment( $this->jobId, $comment );
+
+        if( $result !== false ) $this->comment = $result;
+
+        return $result;
     }
 
     public function removeMe()
@@ -40,7 +54,7 @@ class BaseJobClass
         return $this->removeMe();
     }
 
-    public function setMessage($message)
+    public function setMessage( $message )
     {
         $this->message = $message;
     }

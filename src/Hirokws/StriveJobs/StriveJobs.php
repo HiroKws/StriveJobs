@@ -284,6 +284,7 @@ class StriveJobs
 
         $instance->jobId = $id;
         $instance->status = $job['status'];
+        $instance->comment = $job['comment'];
         $instance->striveJobs = $this;
 
         unset( $instance->message );
@@ -397,14 +398,30 @@ class StriveJobs
      * Save single job's arguments.
      *
      * @param integer $id Job ID.
-     * @param array $data Arguments
-     * @return boolean Result of save.
+     * @param array $data Arguments.
+     * @return boolean Result to save.
      */
-    public function saveArguments( $id, $data )
+    public function putArguments( $id, $data )
     {
         if( !$this->isExistJobs( ( array ) $id ) ) return false;
 
-        $result = $this->repo->saveArguments( $id, json_encode( $data ) );
+        $result = $this->repo->putArguments( $id, json_encode( $data ) );
+
+        return $result;
+    }
+
+    /**
+     * Save single job's comment.
+     *
+     * @param integer $id Job ID.
+     * @param array $comment Comment.
+     * @return boolean Result to save.
+     */
+    public function putComment( $id, $comment )
+    {
+        if( !$this->isExistJobs( ( array ) $id ) ) return false;
+
+        $result = $this->repo->putComment( $id, $comment );
 
         return $result;
     }
@@ -444,7 +461,6 @@ class StriveJobs
     {
         return $this->lastMessage;
     }
-
 
     /**
      * Check mode is correct.
