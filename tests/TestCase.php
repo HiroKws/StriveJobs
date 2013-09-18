@@ -4,11 +4,6 @@
 class TestCase extends Orchestra\Testbench\TestCase
 {
 
-    /**
-     * Creates the application.
-     *
-     * @return Symfony\Component\HttpKernel\HttpKernelInterface
-     */
     public function tearDown()
     {
         \Mockery::close();

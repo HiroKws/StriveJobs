@@ -1,0 +1,13 @@
+{
+    "providers": [
+        "StriveJobs\\StriveJobsServiceProvider"
+    ],
+    "aliases": [
+        {
+            "alias": "SJ",
+            "facade": "StriveJobs\\StriveJobsFacade"
+        }
+    ],
+    "PostInstallMessage": "Updated app.php config file for hirokws/strivejobs.",
+    "PostUninstallMessage": "Automatically remove hirokws/strivejobs registrations from app.php config file."
+}
