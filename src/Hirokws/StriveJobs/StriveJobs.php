@@ -8,9 +8,26 @@ use StriveJobs\Exceptions\IoException;
 
 /**
  * Job controle APIs
+ *
+ * instantiate this class in the service provider.
  */
 class StriveJobs
 {
+    // Job select mode
+    const ModStatus = 'status';
+
+    const ModEqual = 'equal';
+
+    const ModNotEqual = 'notEqual';
+
+    const ModLessThan = 'lessThan';
+
+    const ModLessThanEqual = 'lessThanEqual';
+
+    const ModGreaterThan = 'greaterThan';
+
+    const ModGreaterThanEqual = 'greaterThanEqual';
+
     /**
      * Registered Job classes.
      *
@@ -37,12 +54,15 @@ class StriveJobs
      */
     public function __construct()
     {
-        // Get jobs repository.
+        // Memo: This class was instantiated in the service provider.
+        // So, automatical constructor injectin still didn't work when instantiated this.
+        // To defer to instantiate any classes, I don't want to pass needed object
+        // from the provider.
         $this->repo = \App::make( 'StriveJobs\\Repositories\\JobsRepositoryInterface' );
     }
 
     /**
-     * Register job classes.
+     * Register a job classes.
      *
      * @param Mix $jobClasses single or array of StriveJobs\StriveJobsInterface instance
      * @throws StriveJobs\Exceptions\InvalidArgumentException
@@ -64,7 +84,7 @@ class StriveJobs
     }
 
     /**
-     * Getter of registered job classes.
+     * Getter for registered job classes.
      *
      * @return array of StriveJobsInterface instance with name as key.
      */
@@ -84,6 +104,7 @@ class StriveJobs
      */
     public function registerJob( $job, $comment = '', $arguments = array( ) )
     {
+        // Validate arguments.
         if( ( is_numeric( $job ) and ( $job < 1 or $job > count( $this->jobClasses )) ) or
             (!is_numeric( $job ) and !key_exists( $job, $this->jobClasses )) )
         {
@@ -91,19 +112,14 @@ class StriveJobs
             ' of registerJob method must be job number or name.' );
         }
 
+        // Get job class name if interger value passed as $job.
         if( is_numeric( $job ) )
         {
+            // Get $job-th job class name (as key) from the array.
             $job = key( array_slice( $this->jobClasses, $job - 1, 1, true ) );
         }
 
-        try
-        {
-            $jobId = $this->repo->add( $job, $comment, $arguments );
-        }
-        catch( IoException $e )
-        {
-            return false;
-        }
+        $jobId = $this->repo->add( $job, $comment, $arguments );
 
         return $jobId;
     }
@@ -118,14 +134,7 @@ class StriveJobs
      */
     public function getJobs( $status = '', $limit = 0, $latestedOrder = false )
     {
-        try
-        {
-            $jobs = $this->repo->getJobsByStatus( $status, $limit, $latestedOrder );
-        }
-        catch( IoException $e )
-        {
-            return false;
-        }
+        $jobs = $this->repo->getJobsByStatus( $status, $limit, $latestedOrder );
 
         return $jobs;
     }
@@ -152,14 +161,7 @@ class StriveJobs
 
         if( $mode == 'equal' && !$this->isExistJobs( $ids ) ) return false;
 
-        try
-        {
-            $jobs = $this->repo->getJobsWithMode( $mode, $ids );
-        }
-        catch( IoException $e )
-        {
-            return false;
-        }
+        $jobs = $this->repo->getJobsWithMode( $mode, $ids );
 
         return $jobs;
     }
@@ -215,14 +217,7 @@ class StriveJobs
             }
         }
 
-        try
-        {
-            $jobs = $this->repo->getJobsByRules( $mode, $condition );
-        }
-        catch( IoException $e )
-        {
-            return false;
-        }
+        $jobs = $this->repo->getJobsByRules( $mode, $condition );
 
         return $jobs;
     }
@@ -250,14 +245,7 @@ class StriveJobs
 
         if( $mode == 'equal' && !$this->isExistJobs( $ids ) ) return false;
 
-        try
-        {
-            $affectedCount = $this->repo->changeJobStatus( $mode, $ids, $newStatus );
-        }
-        catch( IoException $e )
-        {
-            return false;
-        }
+        $affectedCount = $this->repo->changeJobStatus( $mode, $ids, $newStatus );
 
         return $affectedCount;
     }
@@ -440,14 +428,7 @@ class StriveJobs
 
         if( empty( $ids ) ) return false;
 
-        try
-        {
-            return $this->repo->isExistJobs( $ids );
-        }
-        catch( IoException $e )
-        {
-            return false;
-        }
+        return $this->repo->isExistJobs( $ids );
     }
 
     /**
@@ -471,13 +452,13 @@ class StriveJobs
     public function isMode( $mode )
     {
         return in_array( $mode, array(
-            'status',
-            'equal',
-            'notEqual',
-            'lessThan',
-            'lessThanEqual',
-            'greaterThan',
-            'greaterThanEqual'
+            self::ModEqual,
+            self::ModStatus,
+            self::ModNotEqual,
+            self::ModLessThan,
+            self::ModLessThanEqual,
+            self::ModGreaterThan,
+            self::ModGreaterThanEqual
             ) );
     }
 

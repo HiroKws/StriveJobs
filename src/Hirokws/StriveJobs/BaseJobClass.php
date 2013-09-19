@@ -19,17 +19,34 @@ use StriveJobs\Exceptions\BadMethodCallException;
  */
 class BaseJobClass
 {
-// @hiro コメント必要
+
+    /**
+     * Save arguments array.
+     *
+     * @param array $data An argument pass to calling method in job class.
+     * @return boolean False when failed.
+     */
     public function putArguments( $data )
     {
         return $this->striveJobs->putArguments( $this->jobId, $data );
     }
 
+    /**
+     * Get a comment of this job.
+     *
+     * @return string A comment for this job.
+     */
     public function getComment()
     {
         return $this->comment;
     }
 
+    /**
+     * Save new comment.
+     *
+     * @param string $comment New comment.
+     * @return boolean False when Failed.
+     */
     public function putComment( $comment )
     {
         $result = $this->striveJobs->putComment( $this->jobId, $comment );
@@ -39,21 +56,43 @@ class BaseJobClass
         return $result;
     }
 
+    /**
+     * Remove this job from a strage.
+     *
+     * @return boolean False when Failed.
+     */
     public function removeMe()
     {
         return $this->striveJobs->removeJobs( ( array ) $this->jobId );
     }
 
+    /**
+     * Remove this job from a strage.
+     * An alias of removeMe method.
+     *
+     * @return boolean Flase when failed.
+     */
     public function killMe()
     {
         return $this->removeMe();
     }
 
+    /**
+     * Remove this job from a strage.
+     * An alias of removeMe method.
+     *
+     * @return boolean Flase when failed.
+     */
     public function harakiri()
     {
         return $this->removeMe();
     }
 
+    /**
+     * Set display message.
+     *
+     * @param type $message
+     */
     public function setMessage( $message )
     {
         $this->message = $message;
