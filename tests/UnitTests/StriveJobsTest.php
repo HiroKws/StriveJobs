@@ -162,28 +162,6 @@ class StriveJobsTest extends TestCase
         $striveJobs->registerJob( '0', 'Comment', array( 'time' => '2' ) );
     }
 
-    public function testRegisterJobWhenIoErrorHappen()
-    {
-        $repoMock = m::mock( 'StriveJobs\\Repositories\\JobsRepositoryInterface' );
-        $repoMock->shouldReceive( 'add' )
-            ->with( 'Job1', 'Comment', array( 'time' => '2' ) )
-            ->once()
-            ->andThrow( 'StriveJobs\\Exceptions\\IoException' );
-
-        App::instance( 'StriveJobs\\Repositories\\JobsRepositoryInterface', $repoMock );
-
-        $mock1 = m::mock( 'stdClass, StriveJobs\\StriveJobsInterface' );
-        $mock1->shouldReceive( 'getName' )
-            ->once()
-            ->andReturn( 'Job1' );
-
-        $striveJobs = new StriveJobs;
-        $striveJobs->registerJobClass( $mock1 );
-
-        $this->assertFalse( $striveJobs
-                ->registerJob( '1', 'Comment', array( 'time' => '2' ) ) );
-    }
-
     public function testGetJobs()
     {
         $data = array( array( 'test' => 'data' ) );
@@ -233,25 +211,6 @@ class StriveJobsTest extends TestCase
         $striveJobs = new StriveJobs;
 
         $this->assertEquals( $data, $striveJobs->getJobs( 'STAT999', 11, true ) );
-    }
-
-    public function testGetJobsWhenIoErrorHappen()
-    {
-        $data = array( array( 'test' => 'data' ) );
-
-        $repoMock = m::mock( 'StriveJobs\\Repositories\\JobsRepositoryInterface' );
-        $repoMock->shouldReceive( 'getJobsByStatus' )
-            ->with( '', 0, false )
-            ->once()
-            ->andThrow( 'StriveJobs\\Exceptions\\IoException' );
-
-        App::instance( 'StriveJobs\\Repositories\\JobsRepositoryInterface', $repoMock );
-
-        $mock1 = m::mock( 'stdClass, StriveJobs\\StriveJobsInterface' );
-
-        $striveJobs = new StriveJobs;
-
-        $this->assertFalse( $striveJobs->getJobs() );
     }
 
 }
