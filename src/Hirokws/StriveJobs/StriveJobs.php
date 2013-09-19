@@ -15,17 +15,11 @@ class StriveJobs
 {
     // Job select mode
     const ModStatus = 'status';
-
     const ModEqual = 'equal';
-
     const ModNotEqual = 'notEqual';
-
     const ModLessThan = 'lessThan';
-
     const ModLessThanEqual = 'lessThanEqual';
-
     const ModGreaterThan = 'greaterThan';
-
     const ModGreaterThanEqual = 'greaterThanEqual';
 
     /**

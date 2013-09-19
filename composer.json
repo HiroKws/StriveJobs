@@ -23,7 +23,7 @@
         ]
     },
     "require": {
-        "laravel/framework": ">=4.0.0"
+        "laravel/framework": ">=4.0.x"
     },
     "require-dev": {
         "orchestra/testbench": "2.0.*",
