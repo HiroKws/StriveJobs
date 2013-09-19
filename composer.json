@@ -17,9 +17,7 @@
             "StriveJobs\\": "src/Hirokws/"
         },
         "classmap": [
-            "src/migrations",
-            "tests"
-
+            "src/migrations"
         ]
     },
     "require": {
