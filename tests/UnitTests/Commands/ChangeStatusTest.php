@@ -3,8 +3,10 @@
 use Mockery as m;
 use StriveJobs\Commands\ListJobs;
 use Symfony\Component\Console\Tester\CommandTester;
+use StriveJobs\TestCase;
 
-class ChangeStatusTest extends TestCase{
+class ChangeStatusTest extends TestCase
+{
 
     public function testFireWith()
     {
@@ -20,6 +22,5 @@ class ChangeStatusTest extends TestCase{
 
         $this->assertEquals( "", $tester->getDisplay() );
     }
-
 
 }

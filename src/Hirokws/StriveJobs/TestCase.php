@@ -1,7 +1,9 @@
 <?php
 
+namespace StriveJobs;
+
 // class TestCase extends Illuminate\Foundation\Testing\TestCase
-class TestCase extends Orchestra\Testbench\TestCase
+class TestCase extends \Orchestra\Testbench\TestCase
 {
 
     public function tearDown()

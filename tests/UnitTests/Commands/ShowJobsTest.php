@@ -3,6 +3,7 @@
 use Mockery as m;
 use StriveJobs\Commands\ShowJobs;
 use Symfony\Component\Console\Tester\CommandTester;
+use StriveJobs\TestCase;
 
 class ShowJobsTest extends TestCase
 {
@@ -14,9 +15,9 @@ class ShowJobsTest extends TestCase
             ->once()
             ->with( '', 0, false )
             ->andReturn( array( array(
-                    'id' => 1,
-                    'name' => 'Job1',
-                    'status' => 'registered',
+                    'id'      => 1,
+                    'name'    => 'Job1',
+                    'status'  => 'registered',
                     'comment' => 'Comm'
             ) ) );
 
@@ -36,21 +37,21 @@ class ShowJobsTest extends TestCase
             ->with( '', 0, false )
             ->andReturn( array(
                 array(
-                    'id' => 1,
-                    'name' => 'Job1',
-                    'status' => 'registered',
+                    'id'      => 1,
+                    'name'    => 'Job1',
+                    'status'  => 'registered',
                     'comment' => 'Comm1'
                 ),
                 array(
-                    'id' => 2,
-                    'name' => 'Job2',
-                    'status' => 'terminated',
+                    'id'      => 2,
+                    'name'    => 'Job2',
+                    'status'  => 'terminated',
                     'comment' => 'Comm2'
                 ),
                 array(
-                    'id' => 3,
-                    'name' => 'Job3',
-                    'status' => 'suspended',
+                    'id'      => 3,
+                    'name'    => 'Job3',
+                    'status'  => 'suspended',
                     'comment' => 'Comm3'
                 )
             ) );
@@ -70,9 +71,9 @@ class ShowJobsTest extends TestCase
             ->once()
             ->with( 'Condition', 0, false ) // check only argument
             ->andReturn( array( array(
-                    'id' => 1,
-                    'name' => 'Job1',
-                    'status' => 'registered',
+                    'id'      => 1,
+                    'name'    => 'Job1',
+                    'status'  => 'registered',
                     'comment' => 'Comm'
             ) ) );
 
@@ -89,9 +90,9 @@ class ShowJobsTest extends TestCase
             ->once()
             ->with( '', 100, false ) // check only argument
             ->andReturn( array( array(
-                    'id' => 1,
-                    'name' => 'Job1',
-                    'status' => 'registered',
+                    'id'      => 1,
+                    'name'    => 'Job1',
+                    'status'  => 'registered',
                     'comment' => 'Comm'
             ) ) );
 
@@ -108,9 +109,9 @@ class ShowJobsTest extends TestCase
             ->once()
             ->with( '', 200, false ) // check only argument
             ->andReturn( array( array(
-                    'id' => 1,
-                    'name' => 'Job1',
-                    'status' => 'registered',
+                    'id'      => 1,
+                    'name'    => 'Job1',
+                    'status'  => 'registered',
                     'comment' => 'Comm'
             ) ) );
 
@@ -127,9 +128,9 @@ class ShowJobsTest extends TestCase
             ->once()
             ->with( '', 0, true ) // check only argument
             ->andReturn( array( array(
-                    'id' => 1,
-                    'name' => 'Job1',
-                    'status' => 'registered',
+                    'id'      => 1,
+                    'name'    => 'Job1',
+                    'status'  => 'registered',
                     'comment' => 'Comm'
             ) ) );
 

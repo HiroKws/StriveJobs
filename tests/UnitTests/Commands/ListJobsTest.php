@@ -3,8 +3,10 @@
 use Mockery as m;
 use StriveJobs\Commands\ListJobs;
 use Symfony\Component\Console\Tester\CommandTester;
+use StriveJobs\TestCase;
 
-class ListJobsTest extends TestCase{
+class ListJobsTest extends TestCase
+{
 
     public function testFireWithNoJob()
     {

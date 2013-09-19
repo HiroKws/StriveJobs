@@ -3,6 +3,7 @@
 use Mockery as m;
 use StriveJobs\Commands\RegisterJob;
 use Symfony\Component\Console\Tester\CommandTester;
+use StriveJobs\TestCase;
 
 class RegisterJobTest extends TestCase
 {

@@ -1,9 +1,11 @@
 <?php
 
-use StriveJobs\Services\ListJobInfo;
 use Mockery as m;
+use StriveJobs\Services\ListJobInfo;
+use StriveJobs\TestCase;
 
-class ListJobInfoTest extends TestCase{
+class ListJobInfoTest extends TestCase
+{
 
     public function testGetClasses()
     {

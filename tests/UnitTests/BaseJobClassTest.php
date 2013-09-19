@@ -2,6 +2,7 @@
 
 use Mockery as m;
 use StriveJobs\BaseJobClass;
+use StriveJobs\TestCase;
 
 class BaseJobClassTest extends TestCase
 {
