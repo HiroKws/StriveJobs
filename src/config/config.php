@@ -1,6 +1,6 @@
 <?php
 
-return array(
+return array(// @hiro サブコマンドレベルで使用するかどうかを選べるように
     // Command main name.
     'MainCommandName'     => 'sjob',
     // Command sub names.
@@ -14,6 +14,6 @@ return array(
         'Show'     => 'show',
         'Sweep'    => 'sweep',
     ),
-    // Hashed reset password. ( Must be set. Reset command can generate this with -? option. )
+    // Hashed reset password. ( Reset command will show you hashed string with -? option. )
     'HashedResetPassword' => '',
 );

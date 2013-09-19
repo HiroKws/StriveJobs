@@ -26,7 +26,7 @@ class AutoJobs extends BaseCommand
      *
      * @return void
      */
-    public function fire()
+    public function fire() // @hiro 時間経過をチェック可能にする。テーブルの変更が必要。
     {
         $args = $this->option();
 
