@@ -66,7 +66,7 @@ class StriveJobsEloquentRepository implements JobsRepositoryInterface
 
     public function getJobsByRules( $mode, $rules )
     {
-        $now = date(\DateTime::ATOM); 
+        $now = date(\DateTime::ATOM);
 
         if( $mode == "Descending" )
         {
@@ -221,6 +221,9 @@ class StriveJobsEloquentRepository implements JobsRepositoryInterface
         try
         {
             $job = $this->striveJob->find( $id );
+
+            // When call removed job, return null.
+            if (is_null($job)) return true;
 
             $job->starting_at = date( \DateTime::ATOM,
                                       strtotime( $job->starting_at ) + $job->interval * 60 );
