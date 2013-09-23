@@ -290,8 +290,7 @@ class StriveJobs
 
         $this->lastMessage = '';
 
-        // At first, try to call 'do'+Status method.
-
+        // Call 'do'+Status method if exists.
         if( method_exists( $instance, $method ) )
         {
             $result = $instance->$method( $argument );
