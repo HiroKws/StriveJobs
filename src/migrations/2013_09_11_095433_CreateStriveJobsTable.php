@@ -18,6 +18,8 @@ class CreateStriveJobsTable extends Migration{
                 $table->string( 'status', 20 )->default( 'registered' );
                 $table->string( 'comment', 200 )->nullable();
                 $table->text('argument');
+                $table->integer('interval')->default('0');
+                $table->timestamp('starting_at')->default('2000/01/01 00:00:00'); // Happy new millennium! ( A past time )
                 $table->timestamps();
         } );
     }

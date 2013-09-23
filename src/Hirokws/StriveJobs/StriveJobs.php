@@ -15,11 +15,17 @@ class StriveJobs
 {
     // Job select mode
     const ModStatus = 'status';
+
     const ModEqual = 'equal';
+
     const ModNotEqual = 'notEqual';
+
     const ModLessThan = 'lessThan';
+
     const ModLessThanEqual = 'lessThanEqual';
+
     const ModGreaterThan = 'greaterThan';
+
     const ModGreaterThanEqual = 'greaterThanEqual';
 
     /**
@@ -80,6 +86,8 @@ class StriveJobs
     /**
      * Getter for registered job classes.
      *
+     * This works for the list command.
+     *
      * @return array of StriveJobsInterface instance with name as key.
      */
     public function getJobClasses()
@@ -96,7 +104,7 @@ class StriveJobs
      * @return mix  Return false when faild, otherwise job id.
      * @throws StriveJobs\Exceptions\InvalidArgumentException
      */
-    public function registerJob( $job, $comment = '', $arguments = array( ) )
+    public function registerJob( $job, $comment = '', $arguments = array( ), $interval = 0 )
     {
         // Validate arguments.
         if( ( is_numeric( $job ) and ( $job < 1 or $job > count( $this->jobClasses )) ) or
@@ -113,13 +121,15 @@ class StriveJobs
             $job = key( array_slice( $this->jobClasses, $job - 1, 1, true ) );
         }
 
-        $jobId = $this->repo->add( $job, $comment, $arguments );
+        $jobId = $this->repo->add( $job, $comment, $arguments, $interval );
 
         return $jobId;
     }
 
     /**
      * Job getter.
+     *
+     * This is for the show command.
      *
      * @param string $status Status to get, '' for all status.
      * @param integer $limit How many jobs get, 0 for all.
@@ -162,6 +172,9 @@ class StriveJobs
 
     /**
      * Getting jobs by specifed rules.
+     * Automatically check next staring time.
+     *
+     * This is for the auto command.
      *
      * $rules:
      *  ''               Get all by descending order.
@@ -219,6 +232,8 @@ class StriveJobs
     /**
      * Change job status.
      *
+     * This work for the change command.
+     *
      * $mode:               $ids:
      *  'status'             Array of statuses.
      *  'equal'              Array of IDs.
@@ -246,6 +261,8 @@ class StriveJobs
 
     /**
      * Execute a job.
+     *
+     * This is for the do commands.
      *
      * @param integer $id Job ID.
      * @return boolean execution result.
@@ -278,23 +295,21 @@ class StriveJobs
         if( method_exists( $instance, $method ) )
         {
             $result = $instance->$method( $argument );
-
-            if( isset( $instance->message ) )
-            {
-                $this->lastMessage = $instance->message;
-            }
-
-            return $result;
         }
-
-        // If not exist 'do'+Status method in job class,
-        // call default method.
-
-        $result = $instance->doDefault( $argument );
+        else
+        {
+            $result = $instance->doDefault( $argument );
+        }
 
         if( isset( $instance->message ) )
         {
             $this->lastMessage = $instance->message;
+        }
+
+        // When finished job sccessfully, update next starting time.
+        if( $result )
+        {
+            $this->repo->updateStaringTime( $id );
         }
 
         return $result;
@@ -302,6 +317,8 @@ class StriveJobs
 
     /**
      * Execute jobs matched with conditions.
+     *
+     * This is for the auto command.
      *
      * $rules:
      *  ''               Get all by descending order.
@@ -357,6 +374,8 @@ class StriveJobs
     /**
      * Delete jobs has 'terminated' status.
      *
+     * This is for the sweep command.
+     *
      * @return mix False when faild, otherwise count of deleted jobs.
      */
     public function deleteTerminatedJobs()
@@ -370,6 +389,8 @@ class StriveJobs
 
     /**
      * Truncate and reset all jobs.
+     *
+     * This works for the reset command.
      */
     public function truncateAllJob()
     {
@@ -445,7 +466,8 @@ class StriveJobs
      */
     public function isMode( $mode )
     {
-        return in_array( $mode, array(
+        return in_array( $mode,
+                         array(
             self::ModEqual,
             self::ModStatus,
             self::ModNotEqual,

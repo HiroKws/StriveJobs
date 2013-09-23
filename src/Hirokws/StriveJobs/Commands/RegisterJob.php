@@ -6,7 +6,7 @@ use StriveJobs\Commands\BaseCommand;
 use Symfony\Component\Console\Input\InputArgument;
 use Symfony\Component\Console\Input\InputOption;
 
-class RegisterJob extends BaseCommand
+class RegisterJob extends BaseCommand // @hiro 名前をaddに変更
 {
     /**
      * The console command name.
@@ -55,7 +55,8 @@ class RegisterJob extends BaseCommand
         }
 
         // Register this job.
-        $id = $striveJobs->registerJob( $job, $this->option( 'comment' ), $arguments );
+        $id = $striveJobs->registerJob( $job, $this->option( 'comment' ), $arguments,
+                                                             $this->option( 'interval' ) );
 
         $this->info( "Create new job. ID is $id." );
 
@@ -87,7 +88,18 @@ class RegisterJob extends BaseCommand
     protected function getOptions()
     {
         return array(
-            array( 'comment', null, InputOption::VALUE_OPTIONAL, 'A comment', '' ),
+            array( 'comment',
+                'c',
+                InputOption::VALUE_OPTIONAL,
+                'A comment',
+                ''
+            ),
+            array( 'interval',
+                'i',
+                InputOption::VALUE_OPTIONAL,
+                'Interval minute.',
+                0
+            ),
         );
     }
 

@@ -66,12 +66,15 @@ class StriveJobsEloquentRepository implements JobsRepositoryInterface
 
     public function getJobsByRules( $mode, $rules )
     {
+        $now = date(\DateTime::ATOM); 
+
         if( $mode == "Descending" )
         {
             try
-            {
+            {// @hiro ascとdescを見直す
                 $jobs = $this->striveJob
                         ->where( 'status', '!=', 'terminated' )
+                        ->where( 'starting_at', '<=', $now )
                         ->orderBy( 'id', 'asc' )
                         ->get()->toArray();
             }
@@ -86,6 +89,7 @@ class StriveJobsEloquentRepository implements JobsRepositoryInterface
             {
                 $jobs = $this->striveJob
                         ->where( 'status', '!=', 'terminated' )
+                        ->where( 'starting_at', '<=', $now )
                         ->orderBy( 'id', 'desc' )
                         ->get()->toArray();
             }
@@ -102,7 +106,9 @@ class StriveJobsEloquentRepository implements JobsRepositoryInterface
             {
                 try
                 {
-                    $jobs = array_merge( $query, $this->striveJob
+                    $jobs = array_merge( $jobs,
+                                         $this->striveJob
+                            ->where( 'starting_at', '<=', $now )
                             ->whereStatus( $status )
                             ->orderBy( 'id', $sort )
                             ->get()->toArray() );
@@ -166,16 +172,18 @@ class StriveJobsEloquentRepository implements JobsRepositoryInterface
         return $query;
     }
 
-    public function add( $job, $comment = '', $argument = array( ) )
+    public function add( $job, $comment = '', $argument = array( ), $interval = 0 )
     {
         try
         {
             $newJob = $this->striveJob->create(
                 array(
-                    'name'     => $job,
-                    'status'   => 'registered',
-                    'comment'  => $comment,
-                    'argument' => json_encode( $argument )
+                    'name'        => $job,
+                    'status'      => 'registered',
+                    'comment'     => $comment,
+                    'argument'    => json_encode( $argument ),
+                    'interval'    => $interval,
+                    'starting_at' => date( \DateTime::ATOM, time() + $interval * 60 ),
                 )
             );
         }
@@ -197,15 +205,33 @@ class StriveJobsEloquentRepository implements JobsRepositoryInterface
     {
         try
         {
-            $resulte = $this->getWhereFromMode( $this->striveJob, $mode, $ids )
+            $result = $this->getWhereFromMode( $this->striveJob, $mode, $ids )
                 ->update( array( 'status' => $newStatus ) );
         }
         catch( \Exception $e )
         {
-            throw new IoException( 'StriveJobs : Can\'t create new job.' );
+            throw new IoException( 'StriveJobs : Can\'t change job status.' );
         }
 
-        return $resulte;
+        return $result;
+    }
+
+    public function updateStaringTime( $id )
+    {
+        try
+        {
+            $job = $this->striveJob->find( $id );
+
+            $job->starting_at = date( \DateTime::ATOM,
+                                      strtotime( $job->starting_at ) + $job->interval * 60 );
+            $result = $job->save();
+        }
+        catch( \Exception $e )
+        {
+            throw new IoException( 'StriveJobs : Can\'t update starting time.' );
+        }
+
+        return $result;
     }
 
     public function putArguments( $id, $data )

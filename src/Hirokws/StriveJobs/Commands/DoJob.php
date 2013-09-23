@@ -41,13 +41,13 @@ class DoJob extends BaseCommand
         }
 
         // Execute specified job.
-        if( !($result = $striveJobs->executeJob( $id )) )
+        if( ($result = $striveJobs->executeJob( $id )) )
         {
-            $this->error( 'Faild to execute.' );
+            $this->info( 'Executed successfully.' );
         }
         else
         {
-            $this->info( 'Executed successfully.' );
+            $this->error( 'Faild to execute.' );
         }
 
         if( ($message = $striveJobs->getMessage()) != '' )

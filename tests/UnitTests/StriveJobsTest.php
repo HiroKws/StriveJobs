@@ -49,7 +49,7 @@ class StriveJobsTest extends TestCase
     {
         $repoMock = m::mock( 'StriveJobs\\Repositories\\JobsRepositoryInterface' );
         $repoMock->shouldReceive( 'add' )
-            ->with( 'Job1', 'Comment', array( 'time' => '2' ) )
+            ->with( 'Job1', 'Comment', array( 'time' => '2' ), 0 )
             ->once()
             ->andReturn( 1 );
 
@@ -72,7 +72,7 @@ class StriveJobsTest extends TestCase
     {
         $repoMock = m::mock( 'StriveJobs\\Repositories\\JobsRepositoryInterface' );
         $repoMock->shouldReceive( 'add' )
-            ->with( 'Job1', 'Comment', array( 'time' => '2' ) )
+            ->with( 'Job1', 'Comment', array( 'time' => '2' ), 0 )
             ->once()
             ->andReturn( 1 );
 
@@ -95,7 +95,7 @@ class StriveJobsTest extends TestCase
     {
         $repoMock = m::mock( 'StriveJobs\\Repositories\\JobsRepositoryInterface' );
         $repoMock->shouldReceive( 'add' )
-            ->with( 'Job1', 'Comment', array( 'time' => '2' ) )
+            ->with( 'Job1', 'Comment', array( 'time' => '2' ), 0 )
             ->never()
             ->andReturn( 1 );
 
@@ -119,7 +119,7 @@ class StriveJobsTest extends TestCase
     {
         $repoMock = m::mock( 'StriveJobs\\Repositories\\JobsRepositoryInterface' );
         $repoMock->shouldReceive( 'add' )
-            ->with( 'Job1', 'Comment', array( 'time' => '2' ) )
+            ->with( 'Job1', 'Comment', array( 'time' => '2' ), 0 )
             ->never()
             ->andReturn( 1 );
 
@@ -143,7 +143,7 @@ class StriveJobsTest extends TestCase
     {
         $repoMock = m::mock( 'StriveJobs\\Repositories\\JobsRepositoryInterface' );
         $repoMock->shouldReceive( 'add' )
-            ->with( 'Job1', 'Comment', array( 'time' => '2' ) )
+            ->with( 'Job1', 'Comment', array( 'time' => '2' ), 0 )
             ->never()
             ->andReturn( 1 );
 

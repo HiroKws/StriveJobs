@@ -33,7 +33,7 @@ class RegisterJobTest extends TestCase
             ->andReturn( $jobs );
         $mock->shouldReceive( 'registerJob' )
             ->once()
-            ->with( '1', '', array( ) )
+            ->with( '1', '', array( ), 0 )
             ->andReturn( 11 );
 
         App::instance( 'StriveJobs\\StriveJobs', $mock );
@@ -54,7 +54,7 @@ class RegisterJobTest extends TestCase
             ->andReturn( $jobs );
         $mock->shouldReceive( 'registerJob' )
             ->once()
-            ->with( 'Job2', '', array( ) )
+            ->with( 'Job2', '', array( ), 0 )
             ->andReturn( 12 );
 
         App::instance( 'StriveJobs\\StriveJobs', $mock );
@@ -80,7 +80,7 @@ class RegisterJobTest extends TestCase
                 'arg2' => 'Arg2',
                 'arg3' => 'Arg3',
                 'arg4' => 'Arg4',
-                'arg5' => 'Arg5' ) )
+                'arg5' => 'Arg5' ), 0 )
             ->andReturn( 13 );
 
         App::instance( 'StriveJobs\\StriveJobs', $mock );
@@ -149,7 +149,7 @@ class RegisterJobTest extends TestCase
         $this->assertEquals( trim( 'Job is an integer or name of job class.' ), trim( $tester->getDisplay() ) );
     }
 
-    public function testFireWithCommnet()
+    public function testFireWithComment()
     {
         $jobs = array( 'Job1' => '', 'Job2' => '', 'Job3' => '' );
 
@@ -159,7 +159,7 @@ class RegisterJobTest extends TestCase
             ->andReturn( $jobs );
         $mock->shouldReceive( 'registerJob' )
             ->once()
-            ->with( '1', 'Comm', array( ) )
+            ->with( '1', 'Comm', array( ), 0 )
             ->andReturn( 20 );
 
         App::instance( 'StriveJobs\\StriveJobs', $mock );
