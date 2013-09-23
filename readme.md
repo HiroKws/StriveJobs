@@ -123,6 +123,7 @@ php artisan config:package hirokws/strivejobs
 
 ~~~
 php artisan sjob:reset -?
+~~~
 
 
 #### StriveJobsとは？
