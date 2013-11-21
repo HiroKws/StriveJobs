@@ -19,7 +19,6 @@ use StriveJobs\Exceptions\BadMethodCallException;
  */
 class BaseJobClass
 {
-
     /**
      * Save arguments array.
      *

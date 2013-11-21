@@ -26,12 +26,12 @@ class AutoJobs extends BaseCommand
      *
      * @return void
      */
-    public function fire() // @hiro 時間経過をチェック可能にする。テーブルの変更が必要。
+    public function fire()
     {
         $args = $this->option();
 
         $validator =
-            \App::make( 'StriveJobs\\Services\\Validations\\AutoExecutionValidator' );
+            \App::make( 'StriveJobs\Services\Validations\AutoExecutionValidator' );
         $message = $validator->validate( $args );
 
         if( $message != '' )

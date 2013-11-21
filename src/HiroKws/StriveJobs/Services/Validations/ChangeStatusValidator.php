@@ -21,60 +21,52 @@ class ChangeStatusValidator
      */
     public function validate( $args )
     {
-        // Check required argument.
-        if( !isset( $args['newStatus'] ) )
-        {
-            return 'New job status is require.';
-        }
-
-        // Check duplicate specifying options.
+        // Omited to check required argument,
+        // because it will done Symfony Input class.
+        // Check duplicated specifying with matching options.
         $ids = array( );
-        $existStatus = 0;
         $existId = 0;
-        $existNotEqual = 0;
-        $existLessThan = 0;
-        $existLessThanEqual = 0;
-        $existGreaterThan = 0;
-        $existGreaterThanEqual = 0;
+        $conditionCount = 0;
 
         if( !empty( $args['status'] ) )
         {
-            $existStatus = 1;
+            $conditionCount++;
         }
         if( !empty( $args['id'] ) )
         {
             $existId = 1;
+            $conditionCount++;
             $ids = $args['id'];
         }
         if( !empty( $args['notId'] ) )
         {
-            $existNotEqual = 1;
+            $conditionCount++;
             $ids = $args['notId'];
         }
-        if( !is_null( $args['lessThan'] ) )
+        if( !empty( $args['lessThan'] ) )
         {
-            $existLessThan = 1;
+            $conditionCount++;
             $ids[] = $args['lessThan'];
         }
-        if( !is_null( $args['lessThanEqual'] ) )
+        if( !empty( $args['lessThanEqual'] ) )
         {
-            $existLessThanEqual = 1;
+            $conditionCount++;
             $ids[] = $args['lessThanEqual'];
         }
-        if( !is_null( $args['greaterThan'] ) )
+        if( !empty( $args['greaterThan'] ) )
         {
-            $existGreaterThan = 1;
+            $conditionCount++;
             $ids[] = $args['greaterThan'];
         }
-        if( !is_null( $args['greaterThanEqual'] ) )
+        if( !empty( $args['greaterThanEqual'] ) )
         {
-            $existGreaterThanEqual = 1;
+            $conditionCount++;
             $ids[] = $args['greaterThanEqual'];
         }
 
-        if( ($existStatus + $existId + $existNotEqual + $existLessThan + $existLessThanEqual + $existGreaterThan + $existGreaterThanEqual) != 1 )
+        if( $conditionCount != 1 )
         {
-            return 'Please specify targets by using one option. (--id and --notEqual can be used multiple.)';
+            return \Lang::get( 'StriveJobs::ChangeCommand.NotOneOfMode' );
         }
 
         if( $existId == 1 )
@@ -82,7 +74,7 @@ class ChangeStatusValidator
             // Check specified ID is wheather existed.
             if( !$this->striveJobs->isExistJobs( $ids ) )
             {
-                return 'ID not found in registered jobs.';
+                return \Lang::get( 'StriveJobs::ChangeCommand.IdNotFound' );
             }
         }
 

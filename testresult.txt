@@ -1,0 +1,22 @@
+PHPUnit 3.7.27-2-g0ce13a8 by Sebastian Bergmann.
+
+Configuration read from /home/hiro/GitHub/WorkBench/workbench/hirokws/strivejobs/phpunit.xml
+
+..................................F
+
+Time: 565 ms, Memory: 22.75Mb
+
+There was 1 failure:
+
+1) ChangeStatusValidatorTest::testFireWithoutCondition
+Failed asserting that two strings are equal.
+--- Expected
++++ Actual
+@@ @@
+-'Please specify targets by using one option. (--id and --notEqual can be used multiply.)'
++'Please specify targets by using one option. (--id, --notEqual and --status can be used multiply.)'
+
+/home/hiro/GitHub/WorkBench/workbench/hirokws/strivejobs/tests/UnitTests/Services/Validations/ChangeStatusValidaotrTest.php:17
+
+FAILURES!
+Tests: 35, Assertions: 30, Failures: 1.

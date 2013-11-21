@@ -29,7 +29,7 @@ class DoJob extends BaseCommand
     public function fire()
     {
         // Get API
-        $striveJobs = \App::make( 'StriveJobs\\StriveJobs' );
+        $striveJobs = \App::make( 'StriveJobs\StriveJobs' );
 
         // Check ID if exist
         $id = $this->argument( 'id' );

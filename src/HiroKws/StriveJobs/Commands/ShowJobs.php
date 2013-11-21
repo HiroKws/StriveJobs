@@ -39,7 +39,7 @@ class ShowJobs extends BaseCommand
 
         // Don't use constructor to get a instance.
         // Because everytime make extra instance.
-        $striveJobs = \App::make( 'StriveJobs\\StriveJobs' );
+        $striveJobs = \App::make( 'StriveJobs\StriveJobs' );
 
         // call API
         $jobs = $striveJobs->getJobs( $status, $limit, $oldestOrder );

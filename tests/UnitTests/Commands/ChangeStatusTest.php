@@ -1,9 +1,9 @@
 <?php
 
 use Mockery as m;
+use StriveJobs\TestCase;
 use StriveJobs\Commands\ListJobs;
 use Symfony\Component\Console\Tester\CommandTester;
-use StriveJobs\TestCase;
 
 class ChangeStatusTest extends TestCase
 {
@@ -15,7 +15,7 @@ class ChangeStatusTest extends TestCase
             ->once()
             ->andReturn( array( ) );
 
-        App::instance( 'StriveJobs\\Services\\ListJobInfo', $mock );
+        App::instance( 'StriveJobs\Services\ListJobInfo', $mock );
 
         $tester = new CommandTester( new ListJobs );
         $tester->execute( array( ) );

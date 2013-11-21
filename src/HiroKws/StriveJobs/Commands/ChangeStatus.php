@@ -32,7 +32,7 @@ class ChangeStatus extends BaseCommand
         // Check Argument and Options.
         $args = array_merge( $this->option(), $this->argument() );
 
-        $validator = \App::make( 'StriveJobs\\Services\\Validations\\ChangeStatusValidator' );
+        $validator = \App::make( 'StriveJobs\Services\Validations\ChangeStatusValidator' );
         $message = $validator->validate( $args );
 
         if( $message != '' )
@@ -91,12 +91,13 @@ class ChangeStatus extends BaseCommand
         }
 
         // Get API instance
-        $striveJobs = \App::make( 'StriveJobs\\StriveJobs' );
+        $striveJobs = \App::make( 'StriveJobs\StriveJobs' );
 
         // Dry run
         if( $args['dry'] )
         {
-            $changeStatus = \App::make( 'StriveJobs\\Services\\ChangeStatusDryRun', array(
+            $changeStatus = \App::make( 'StriveJobs\Services\ChangeStatusDryRun',
+                                        array(
                     $striveJobs ) );
             $changeStatus->change( $this, $mode, $ids, $args['newStatus'] );
 
@@ -106,7 +107,8 @@ class ChangeStatus extends BaseCommand
         // Call change status API
         $affected = $striveJobs->changeJobStatus( $mode, $ids, $args['newStatus'] );
 
-        $this->info( "Updated $affected job(s)." );
+        $this->info( trans( 'StriveJobs::ChangeCommand.Update',
+                            array( 'affected' => $affected ) ) );
 
         return 0;
     }
@@ -134,7 +136,7 @@ class ChangeStatus extends BaseCommand
      */
     protected function getOptions()
     {
-        return array(
+        return array( 
             array(
                 'status',
                 's',
@@ -146,14 +148,14 @@ class ChangeStatus extends BaseCommand
                 'id',
                 'i',
                 InputOption::VALUE_IS_ARRAY | InputOption::VALUE_OPTIONAL,
-                'An example option.',
+                'Change job status with specified ID.',
                 null
             ),
             array(
                 'notId',
                 'u',
                 InputOption::VALUE_IS_ARRAY | InputOption::VALUE_OPTIONAL,
-                'Change for jobs not equale specified ID.',
+                'Change jobs status without specified ID.',
                 null
             ),
             array(

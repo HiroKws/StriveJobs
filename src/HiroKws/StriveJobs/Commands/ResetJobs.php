@@ -46,7 +46,7 @@ class ResetJobs extends BaseCommand
         }
 
         // Truncate jobs table.
-        $striveJobs = \App::make( 'StriveJobs\\StriveJobs' );
+        $striveJobs = \App::make( 'StriveJobs\StriveJobs' );
         $striveJobs->truncateAllJob();
 
         $this->info( 'Reset all job.' );

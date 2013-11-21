@@ -14,14 +14,14 @@
     ],
     "autoload": {
         "psr-0": {
-            "StriveJobs\\": "src/Hirokws/"
+            "StriveJobs\\": "src/HiroKws/"
         },
         "classmap": [
             "src/migrations"
         ]
     },
     "require": {
-        "laravel/framework": "4.0.x"
+        "laravel/framework": ">=4.0"
     },
     "require-dev": {
         "orchestra/testbench": "2.0.*",

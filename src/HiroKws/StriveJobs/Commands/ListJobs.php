@@ -28,7 +28,7 @@ class ListJobs extends BaseCommand
     public function fire()
     {
         // Get all job classes.
-        $jobInfoInstance = \App::make( 'StriveJobs\\Services\\ListJobInfo' );
+        $jobInfoInstance = \App::make( 'StriveJobs\Services\ListJobInfo' );
         $jobInfo = $jobInfoInstance->get();
 
         foreach( $jobInfo as $info )

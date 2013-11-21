@@ -13,7 +13,7 @@ class BaseJobClassTest extends TestCase
         $data = 'Dummy_9lc98';
         $result = 'Result_90d67';
 
-        $mock = m::mock( 'StriveJobs\\StriveJobs' );
+        $mock = m::mock( 'StriveJobs\StriveJobs' );
         $mock->shouldReceive( 'putArguments' )
             ->once()
             ->with( $jobId, $data )
@@ -42,7 +42,7 @@ class BaseJobClassTest extends TestCase
         $data = 'Dummy_br4yd';
         $result = 'Result_3dgsd';
 
-        $mock = m::mock( 'StriveJobs\\StriveJobs' );
+        $mock = m::mock( 'StriveJobs\StriveJobs' );
         $mock->shouldReceive( 'putComment' )
             ->once()
             ->with( $jobId, $data )
@@ -61,7 +61,7 @@ class BaseJobClassTest extends TestCase
         $jobId = 176;
         $result = 'Result_89vjd';
 
-        $mock = m::mock( 'StriveJobs\\StriveJobs' );
+        $mock = m::mock( 'StriveJobs\StriveJobs' );
         $mock->shouldReceive( 'removeJobs' )
             ->once()
             ->with( ( array ) $jobId )
@@ -79,7 +79,7 @@ class BaseJobClassTest extends TestCase
         $jobId = 90;
         $result = 'Result_ckc09';
 
-        $mock = m::mock( 'StriveJobs\\StriveJobs' );
+        $mock = m::mock( 'StriveJobs\StriveJobs' );
         $mock->shouldReceive( 'removeJobs' )
             ->once()
             ->with( ( array ) $jobId )
@@ -97,7 +97,7 @@ class BaseJobClassTest extends TestCase
         $jobId = 1294;
         $result = 'Result_38Xd0';
 
-        $mock = m::mock( 'StriveJobs\\StriveJobs' );
+        $mock = m::mock( 'StriveJobs\StriveJobs' );
         $mock->shouldReceive( 'removeJobs' )
             ->once()
             ->with( ( array ) $jobId )
@@ -125,7 +125,7 @@ class BaseJobClassTest extends TestCase
         $jobId = 3432;
         $newStatus = 'cdi88d9';
 
-        $mock = m::mock( 'StriveJobs\\StriveJobs' );
+        $mock = m::mock( 'StriveJobs\StriveJobs' );
         $mock->shouldReceive( 'changeJobStatus' )
             ->once()
             ->with( 'equal', $jobId, $newStatus )
@@ -143,7 +143,7 @@ class BaseJobClassTest extends TestCase
         $jobId = 59843;
         $newStatus = 'ui7d0';
 
-        $mock = m::mock( 'StriveJobs\\StriveJobs' );
+        $mock = m::mock( 'StriveJobs\StriveJobs' );
         $mock->shouldReceive( 'changeJobStatus' )
             ->once()
             ->with( 'equal', $jobId, $newStatus )
@@ -161,7 +161,7 @@ class BaseJobClassTest extends TestCase
         $jobId = 646;
         $newStatus = 'lyew3';
 
-        $mock = m::mock( 'StriveJobs\\StriveJobs' );
+        $mock = m::mock( 'StriveJobs\StriveJobs' );
         $mock->shouldReceive( 'changeJobStatus' )
             ->never();
 

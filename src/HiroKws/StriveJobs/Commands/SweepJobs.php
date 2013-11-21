@@ -28,7 +28,7 @@ class SweepJobs extends BaseCommand
     public function fire()
     {
         // Delete all jobs has terminated' status.
-        $striveJobs = \App::make( 'StriveJobs\\StriveJobs' );
+        $striveJobs = \App::make( 'StriveJobs\StriveJobs' );
         $affected = $striveJobs->deleteTerminatedJobs();
 
         if( $affected === false )

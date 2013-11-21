@@ -30,7 +30,7 @@ class RegisterJob extends BaseCommand // @hiro 名前をaddに変更
     public function fire()
     {
         // Get all job classes.
-        $striveJobs = \App::make( 'StriveJobs\\StriveJobs' );
+        $striveJobs = \App::make( 'StriveJobs\StriveJobs' );
         $jobClasses = $striveJobs->getJobClasses();
 
         // Get all argument
